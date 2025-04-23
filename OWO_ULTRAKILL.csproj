@@ -59,6 +59,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="OWOSkin.cs" />
     <Compile Include="OWO_ULTRAKILL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
