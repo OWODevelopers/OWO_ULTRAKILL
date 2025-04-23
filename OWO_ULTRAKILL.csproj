@@ -66,4 +66,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>del  "$(TargetDir)\OWO\*.owo
+XCOPY "$(SolutionDir)OWO" "$(TargetDir)\OWO\" /S /Y
+del "$(TargetDir)\*.pdb"
+del "$(TargetDir)\*.xml"</PostBuildEvent>
+  </PropertyGroup>
 </Project>
