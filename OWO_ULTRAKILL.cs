@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace OWO_ULTRAKILL
 {
@@ -43,6 +44,7 @@ namespace OWO_ULTRAKILL
             {
                 NewMovement nmov = Traverse.Create(__instance).Field("nmov").GetValue<NewMovement>();
                 float fallSpeed = Traverse.Create(nmov).Field("fallSpeed").GetValue<float>();
+                owoSkin.LOG($"GroundCheck FallSpeed - {fallSpeed}");
 
                 if (fallSpeed <= -92)
                 {
@@ -51,9 +53,97 @@ namespace OWO_ULTRAKILL
             }
         }
 
+        [HarmonyPatch(typeof(NewMovement), "StartSlide")]
+        public class OnStartSlide
+        {
+            [HarmonyPostfix]
+            public static void Postfix(NewMovement __instance)
+            {
+                 owoSkin.LOG($"NewMovement StartSlide");
+            }
+        }
+
+        [HarmonyPatch(typeof(NewMovement), "StopSlide")]
+        public class OnStopSlide
+        {
+            [HarmonyPostfix]
+            public static void Postfix(NewMovement __instance)
+            {
+                 owoSkin.LOG($"NewMovement StopSlide");
+            }
+        }
+
+        [HarmonyPatch(typeof(NewMovement), "Jump")]
+        public class OnJump
+        {
+            [HarmonyPostfix]
+            public static void Postfix(NewMovement __instance)
+            {
+                if (__instance.modNoJump || (bool)__instance.groundProperties)
+                {
+                    if (__instance.modNoJump || !__instance.groundProperties.canJump) return;
+                }
+                owoSkin.LOG($"NewMovement Jump");
+            }
+        }
+
+        [HarmonyPatch(typeof(NewMovement), "WallJump")]
+        public class OnWallJump
+        {
+            [HarmonyPostfix]
+            public static void Postfix(NewMovement __instance)
+            {
+                owoSkin.LOG($"NewMovement WallJump");
+            }
+        }
+        
+        [HarmonyPatch(typeof(NewMovement), "Dodge")]
+        public class OnDodge
+        {
+            [HarmonyPostfix]
+            public static void Postfix(NewMovement __instance)
+            {
+                if (__instance.modNoDashSlide) return;
+                owoSkin.LOG($"NewMovement Dodge");
+            }
+        }
+        
+        [HarmonyPatch(typeof(NewMovement), "Launch")]
+        public class OnLaunch
+        {
+            [HarmonyPostfix]
+            public static void Postfix(NewMovement __instance)
+            {
+                if (__instance.modNoDashSlide) return;
+                owoSkin.LOG($"NewMovement Launch");
+            }
+        }
+
+        [HarmonyPatch(typeof(NewMovement), "Parry")]
+        public class OnParry
+        {
+            [HarmonyPostfix]
+            public static void Postfix(NewMovement __instance, EnemyIdentifier eid = null)
+            {
+                owoSkin.LOG($"NewMovement Parry - Enemy: {eid}");
+            }
+        }
+
+
         #endregion
 
         #region Impacts
+
+        [HarmonyPatch(typeof(NewMovement), "GetHurt")]
+        public class OnGetHurt
+        {
+            [HarmonyPostfix]
+            public static void Postfix(NewMovement __instance, int damage, bool invincible, float scoreLossMultiplier = 1f, bool explosion = false, bool instablack = false, float hardDamageMultiplier = 0.35f, bool ignoreInvincibility = false)
+            {
+                if (__instance.dead || __instance.levelOver || !(!invincible || __instance.gameObject.layer != 15 || ignoreInvincibility) || damage <= 0) return;
+                owoSkin.LOG($"NewMovement GetHurt");
+            }
+        }
 
         //unused?
         [HarmonyPatch(typeof(Wicked), "OnCollisionEnter")]
@@ -430,7 +520,188 @@ namespace OWO_ULTRAKILL
 
         #endregion
 
+        [HarmonyPatch(typeof(DualWieldPickup), "PickedUp")]
+        public class OnPickedUp
+        {
+            [HarmonyPostfix]
+            public static void Postfix(NewMovement __instance)
+            {
+                owoSkin.LOG($"DualWieldPickup PickedUp");
+            }
+        }
 
+        [HarmonyPatch(typeof(NewMovement), "SuperCharge")]
+        public class OnSuperCharge
+        {
+            [HarmonyPostfix]
+            public static void Postfix(NewMovement __instance)
+            {
+                owoSkin.LOG($"NewMovement SuperCharge");
+            }
+        }
+
+        [HarmonyPatch(typeof(NewMovement), "Respawn")]
+        public class OnRespawn
+        {
+            [HarmonyPostfix]
+            public static void Postfix(NewMovement __instance)
+            {
+                owoSkin.LOG($"NewMovement Respawn");
+            }
+        }
+
+
+        #region Weapon
+
+        #region Revolver
+        [HarmonyPatch(typeof(Revolver), "Shoot")]
+        public class OnRevolverShoot
+        {
+            [HarmonyPostfix]
+            public static void Postfix(Revolver __instance, int shotType)
+            {
+
+                owoSkin.LOG($"Revolver Shoot - Variation: {__instance.gunVariation} Typo - {shotType} ");
+            }
+        }
+        #endregion
+
+        #region Shotgun
+
+        [HarmonyPatch(typeof(Shotgun), "Shoot")]
+        public class OnShotgunShoot
+        {
+            [HarmonyPostfix]
+            public static void Postfix(Shotgun __instance)
+            {
+                
+                owoSkin.LOG($"Shotgun Shoot - Variation: {__instance.variation} - PrimaryCharge: {__instance.primaryCharge}");
+            }
+        }
+        
+        [HarmonyPatch(typeof(Shotgun), "ShootSinks")]
+        public class OnShotgunShootSpecial0
+        {
+            [HarmonyPostfix]
+            public static void Postfix(Shotgun __instance)
+            {
+            }
+        }
+        
+        [HarmonyPatch(typeof(Shotgun), "ShootSaw")]
+        public class OnShotgunShootSpecial2
+        {
+            [HarmonyPostfix]
+            public static void Postfix(Shotgun __instance)
+            {
+            }
+        }
+
+        #endregion
+
+        #region NailGun
+        [HarmonyPatch(typeof(Nailgun), "Shoot")]
+        public class OnNailgunShoot
+        {
+            [HarmonyPostfix]
+            public static void Postfix(Nailgun __instance)
+            {
+
+                owoSkin.LOG($"Nailgun Shoot - {__instance.variation}");
+            }
+        }
+        
+        [HarmonyPatch(typeof(Nailgun), "ShootZapper")]
+        public class OnNailgunShootV0
+        {
+            [HarmonyPostfix]
+            public static void Postfix(Nailgun __instance)
+            {
+                owoSkin.LOG($"Nailgun ShootZapper - {__instance.variation}");
+            }
+        }
+
+        [HarmonyPatch(typeof(Nailgun), "SuperSaw")]
+        public class OnNailgunShootV1
+        {
+            [HarmonyPostfix]
+            public static void Postfix(Nailgun __instance)
+            {
+                owoSkin.LOG($"Nailgun SuperSaw - {__instance.variation}");
+            }
+        }
+
+        [HarmonyPatch(typeof(Nailgun), "BurstFire")]
+        public class OnNailgunShootV2
+        {
+            [HarmonyPostfix]
+            public static void Postfix(Nailgun __instance)
+            {
+                owoSkin.LOG($"Nailgun BurstFire - {__instance.variation}");
+            }
+        }
+
+        [HarmonyPatch(typeof(Nailgun), "ShootMagnet")]
+        public class OnNailgunShootV3
+        {
+            [HarmonyPostfix]
+            public static void Postfix(Nailgun __instance)
+            {
+                owoSkin.LOG($"Nailgun ShootMagnet - {__instance.variation}");
+            }
+        }
+        #endregion
+
+        #region RailCannon
+        [HarmonyPatch(typeof(Railcannon), "Shoot")]
+        public class OnRailcannonShoot
+        {
+            [HarmonyPostfix]
+            public static void Postfix(Railcannon __instance)
+            {
+
+                owoSkin.LOG($"Railcannon Shoot  - {__instance.variation}");
+            }
+        }
+        #endregion
+
+        #region RocketLauncher
+        [HarmonyPatch(typeof(RocketLauncher), "Shoot")]
+        public class OnRocketLauncherShoot
+        {
+            [HarmonyPostfix]
+            public static void Postfix(RocketLauncher __instance)
+            {
+
+                owoSkin.LOG($"RocketLauncher Shoot - {__instance.variation}");
+            }
+        }
+        
+        [HarmonyPatch(typeof(RocketLauncher), "ShootCannonball")]
+        public class OnRocketLauncherShootV0
+        {
+            [HarmonyPostfix]
+            public static void Postfix(RocketLauncher __instance)
+            {
+
+                owoSkin.LOG($"RocketLauncher ShootCannonball - {__instance.variation}");
+            }
+        }
+        
+        [HarmonyPatch(typeof(RocketLauncher), "ShootNapalm")]
+        public class OnRocketLauncherShootV1
+        {
+            [HarmonyPostfix]
+            public static void Postfix(RocketLauncher __instance)
+            {
+
+                owoSkin.LOG($"RocketLauncher ShootNapalm - {__instance.variation}");
+            }
+        }
+        #endregion
+
+
+        #endregion
 
 
     }
