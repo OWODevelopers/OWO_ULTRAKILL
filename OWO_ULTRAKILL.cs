@@ -4,8 +4,10 @@ using HarmonyLib;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace OWO_ULTRAKILL
 {
@@ -32,5 +34,514 @@ namespace OWO_ULTRAKILL
             harmony.PatchAll();
         }
 
+
+        [HarmonyPatch(typeof(Explosion), "Collide")]
+        public class OnExplosion
+        {
+            [HarmonyPrefix]
+            public static void Prefix(out int __state)
+            {
+                //This is bad. Really bad. but I'm gonna go with it!
+                __state = MonoSingleton<NewMovement>.Instance.hp;
+            }
+            [HarmonyPostfix]
+            public static void Postfix(int __state, Explosion __instance, Collider other)
+            {
+                if (MonoSingleton<NewMovement>.Instance.hp < __state)
+                {
+                    //mmm linear scaling
+                    //float distance = Vector3.Distance(other.transform.position, __instance.transform.position);
+                    //float intensity = Mathf.Min(Mathf.Max(1 - (distance / 18), 0.1f), 0.75f);
+                    //owoSkin.Feel("ExplosionBelly", intensity);
+
+                    owoSkin.LOG($"Explosion Collide");
+                }
+            }
+        }
+
+
+        //Time for the hell of damage patches for a LOT of different stuff
+        [HarmonyPatch(typeof(BeamgunBeam), "Update")]
+        public class OnBeamgun
+        {
+            [HarmonyPrefix]
+            public static void Prefix(out int __state)
+            {
+                //This is bad. Really bad. but I'm gonna go with it!
+                __state = MonoSingleton<NewMovement>.Instance.hp;
+            }
+            [HarmonyPostfix]
+            public static void Postfix(int __state, BeamgunBeam __instance)
+            {
+                int damage = __state - MonoSingleton<NewMovement>.Instance.hp;
+                if (damage > 0)
+                {
+                    LayerMask layerMask = LayerMaskDefaults.Get(LMD.EnemiesAndEnvironment);
+                    if (__instance.canHitPlayer && (double)__instance.playerDamageCooldown <= 0.0)
+                        layerMask = LayerMaskDefaults.Get(LMD.EnemiesEnvironmentAndPlayer);
+                    RaycastHit hitInfo;
+                    if (Physics.Raycast(__instance.transform.position, __instance.transform.forward, out hitInfo, float.PositiveInfinity, (int)layerMask, QueryTriggerInteraction.Ignore))
+                    {
+                        owoSkin.LOG($"BeamgunBeam Position - {hitInfo.point}");
+                    }
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(Projectile), "TimeToDie")]
+        public class OnProjectile
+        {
+            [HarmonyPrefix]
+            public static void Prefix(out int __state)
+            {
+                //This is bad. Really bad. but I'm gonna go with it!
+                __state = MonoSingleton<NewMovement>.Instance.hp;
+            }
+            [HarmonyPostfix]
+            public static void Postfix(int __state, Projectile __instance)
+            {
+                int damage = __state - MonoSingleton<NewMovement>.Instance.hp;
+                if (damage > 0)
+                {
+                    owoSkin.LOG($"Projectile TimeToDie hit position - {__instance.transform.position}");
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(BlackHoleProjectile), "OnTriggerEnter")]
+        public class OnBlackHoleProjectile
+        {
+            [HarmonyPrefix]
+            public static void Prefix(out int __state)
+            {
+                //This is bad. Really bad. but I'm gonna go with it!
+                __state = MonoSingleton<NewMovement>.Instance.hp;
+            }
+            [HarmonyPostfix]
+            public static void Postfix(int __state)
+            {
+                int damage = __state - MonoSingleton<NewMovement>.Instance.hp;
+                if (damage > 0)
+                {
+                    if (MonoSingleton<NewMovement>.Instance.hp < __state)
+                    {
+                        owoSkin.LOG($"BlackHoleProjectile OnTriggerEnter");
+
+                    }
+                }
+            }
+        }
+
+
+        [HarmonyPatch(typeof(Coin), "ShootAtPlayer")]
+        public class OnCoin
+        {
+            [HarmonyPrefix]
+            public static void Prefix(out int __state)
+            {
+                //This is bad. Really bad. but I'm gonna go with it!
+                __state = MonoSingleton<NewMovement>.Instance.hp;
+            }
+            [HarmonyPostfix]
+            public static void Postfix(int __state, Coin __instance)
+            {
+                int damage = __state - MonoSingleton<NewMovement>.Instance.hp;
+                if (damage > 0)
+                {
+                    owoSkin.LOG($"Coin Shoot at Player - {__instance.transform.position}");
+
+                }
+            }
+        }
+
+
+        [HarmonyPatch(typeof(ContinuousBeam), "Update")]
+        public class OnContinuousBeam
+        {
+            [HarmonyPrefix]
+            public static void Prefix(out int __state)
+            {
+                //This is bad. Really bad. but I'm gonna go with it!
+                __state = MonoSingleton<NewMovement>.Instance.hp;
+            }
+            [HarmonyPostfix]
+            public static void Postfix(int __state, ContinuousBeam __instance)
+            {
+                int damage = __state - MonoSingleton<NewMovement>.Instance.hp;
+                if (damage > 0)
+                {
+                    Vector3 zero = Vector3.zero;
+                    RaycastHit hitInfo;
+                    Vector3 vector3 = !Physics.Raycast(__instance.transform.position, __instance.transform.forward, out hitInfo, float.PositiveInfinity, (int)__instance.environmentMask) ? __instance.transform.position + __instance.transform.forward * 999f : hitInfo.point;
+                    __instance.lr.SetPosition(0, __instance.transform.position);
+                    __instance.lr.SetPosition(1, vector3);
+                    if ((bool)__instance.impactEffect)
+                        __instance.impactEffect.transform.position = vector3;
+                    RaycastHit[] raycastHitArray = Physics.SphereCastAll(__instance.transform.position + __instance.transform.forward * 0.35f, 0.35f, __instance.transform.forward, Vector3.Distance(__instance.transform.position, vector3) - 0.35f, (int)__instance.hitMask);
+                    if (raycastHitArray != null && raycastHitArray.Length != 0)
+                    {
+                        for (int index = 0; index < raycastHitArray.Length; ++index)
+                        {
+                            if (raycastHitArray[index].collider.gameObject.tag == "Player" && __instance.canHitPlayer && (double)__instance.playerCooldown <= 0.0)
+                            {
+                                owoSkin.LOG($"Coninuous beam impact position - {raycastHitArray[index].point}");
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+
+        [HarmonyPatch(typeof(DeathZone), "GotHit")]
+        public class OnDeathZone
+        {
+            [HarmonyPrefix]
+            public static void Prefix(out int __state)
+            {
+                //This is bad. Really bad. but I'm gonna go with it!
+                __state = MonoSingleton<NewMovement>.Instance.hp;
+            }
+            [HarmonyPostfix]
+            public static void Postfix(int __state, DeathZone __instance)
+            {
+                int damage = __state - MonoSingleton<NewMovement>.Instance.hp;
+                if (damage > 0)
+                {
+                    owoSkin.LOG($"DeathZone GotHit - {__instance.transform.position}");
+
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(FireZone), "OnTriggerStay")]
+        public class OnFireZone
+        {
+            [HarmonyPrefix]
+            public static void Prefix(out int __state)
+            {
+                //This is bad. Really bad. but I'm gonna go with it!
+                __state = MonoSingleton<NewMovement>.Instance.hp;
+            }
+            [HarmonyPostfix]
+            public static void Postfix(int __state, DeathZone __instance)
+            {
+                int damage = __state - MonoSingleton<NewMovement>.Instance.hp;
+                if (damage > 0)
+                {
+                    owoSkin.LOG($"FireZone OnTriggerStay - {__instance.transform.position}");
+
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(HurtZone), "FixedUpdate")]
+        public class OnHurtZone
+        {
+            [HarmonyPrefix]
+            public static void Prefix(out int __state)
+            {
+                //This is bad. Really bad. but I'm gonna go with it!
+                __state = MonoSingleton<NewMovement>.Instance.hp;
+            }
+            [HarmonyPostfix]
+            public static void Postfix(int __state, HurtZone __instance)
+            {
+                int damage = __state - MonoSingleton<NewMovement>.Instance.hp;
+                if (damage > 0)
+                {
+                     owoSkin.LOG($"HurtZone FixedUpdate - {__instance.transform.position}");
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(MassSpear), "OnTriggerEnter")]
+        public class OnMassSpear
+        {
+            [HarmonyPrefix]
+            public static void Prefix(out int __state)
+            {
+                //This is bad. Really bad. but I'm gonna go with it!
+                __state = MonoSingleton<NewMovement>.Instance.hp;
+            }
+            [HarmonyPostfix]
+            public static void Postfix(int __state, Projectile __instance)
+            {
+                int damage = __state - MonoSingleton<NewMovement>.Instance.hp;
+                if (damage > 0)
+                {
+                    owoSkin.LOG($"MassSpear OnTriggerEnter - {__instance.transform.position}");
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(MinosPrime), "DropAttackActivate")]
+        public class OnMinosPrime
+        {
+            [HarmonyPostfix]
+            public static void Postfix(MinosPrime __instance)
+            {
+                RaycastHit hitInfo;
+                Physics.Raycast(__instance.aimingBone.position, Vector3.down, out hitInfo, 250f, (int)LayerMaskDefaults.Get(LMD.Environment));
+                LineRenderer component1 = Instantiate<GameObject>(__instance.attackTrail, __instance.aimingBone.position, __instance.transform.rotation).GetComponent<LineRenderer>();
+                component1.SetPosition(0, __instance.aimingBone.position);
+                RaycastHit[] raycastHitArray = Physics.SphereCastAll(__instance.aimingBone.position, 5f, Vector3.down, Vector3.Distance(__instance.aimingBone.position, hitInfo.point), (int)LayerMaskDefaults.Get(LMD.EnemiesAndPlayer));
+                bool flag = false;
+                List<EnemyIdentifier> enemyIdentifierList = new List<EnemyIdentifier>();
+                foreach (RaycastHit raycastHit in raycastHitArray)
+                {
+                    if (raycastHit.collider.gameObject.tag == "Player" && !flag)
+                    {
+                        owoSkin.LOG($"MinosPrime DropAttackActivate - {raycastHit.point}");
+
+                    }
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(MinosPrime), "RiderKickActivate")]
+        public class OnMinosPrimeKick
+        {
+            [HarmonyPostfix]
+            public static void Postfix(MinosPrime __instance)
+            {
+                RaycastHit hitInfo;
+                Physics.Raycast(__instance.aimingBone.position, __instance.transform.forward, out hitInfo, 250f, (int)LayerMaskDefaults.Get(LMD.Environment));
+                LineRenderer component1 = Instantiate<GameObject>(__instance.attackTrail, __instance.aimingBone.position, __instance.transform.rotation).GetComponent<LineRenderer>();
+                component1.SetPosition(0, __instance.aimingBone.position);
+                RaycastHit[] raycastHitArray = Physics.SphereCastAll(__instance.aimingBone.position, 5f, __instance.transform.forward, Vector3.Distance(__instance.aimingBone.position, hitInfo.point), (int)LayerMaskDefaults.Get(LMD.EnemiesAndPlayer));
+                bool flag = false;
+                foreach (RaycastHit raycastHit in raycastHitArray)
+                {
+                    if (raycastHit.collider.gameObject.tag == "Player" && !flag)
+                    {
+                        owoSkin.LOG($"MinosPrime RiderKickActivate - {raycastHit.point}");
+                    }
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(Nail), "OnCollisionEnter")]
+        public class OnNail
+        {
+            [HarmonyPrefix]
+            public static void Prefix(out int __state)
+            {
+                //This is bad. Really bad. but I'm gonna go with it!
+                __state = MonoSingleton<NewMovement>.Instance.hp;
+            }
+            [HarmonyPostfix]
+            public static void Postfix(int __state, Nail __instance)
+            {
+                int damage = __state - MonoSingleton<NewMovement>.Instance.hp;
+                if (damage > 0)
+                {
+                    owoSkin.LOG($"Nail OnCollisionEnter - {__instance.transform.position}");
+
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(PhysicalShockwave), "CheckCollision")]
+        public class OnShockWave
+        {
+            [HarmonyPrefix]
+            public static void Prefix(out int __state)
+            {
+                //This is bad. Really bad. but I'm gonna go with it!
+                __state = MonoSingleton<NewMovement>.Instance.hp;
+            }
+            [HarmonyPostfix]
+            public static void Postfix(int __state)
+            {
+                int damage = __state - MonoSingleton<NewMovement>.Instance.hp;
+                if (damage > 0)
+                {
+                    owoSkin.LOG($"PhysicalShockwave ChekCollision");
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(RevolverBeam), "ExecuteHits")]
+        public class OnRevolverBeam
+        {
+            [HarmonyPrefix]
+            public static void Prefix(out int __state)
+            {
+                //This is bad. Really bad. but I'm gonna go with it!
+                __state = MonoSingleton<NewMovement>.Instance.hp;
+            }
+            [HarmonyPostfix]
+            public static void Postfix(int __state, RaycastHit currentHit)
+            {
+                int damage = __state - MonoSingleton<NewMovement>.Instance.hp;
+                if (damage > 0)
+                {
+                    owoSkin.LOG($"RevolverBeam ExecuteHits - {currentHit.point}");
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(SisyphusPrime), "DropAttackActivate")]
+        public class OnSisyphusPrime
+        {
+            [HarmonyPostfix]
+            public static void Postfix(SisyphusPrime __instance)
+            {
+                RaycastHit hitInfo;
+                Physics.Raycast(__instance.aimingBone.position, Vector3.down, out hitInfo, 250f, (int)LayerMaskDefaults.Get(LMD.Environment));
+                LineRenderer component1 = Instantiate<GameObject>(__instance.attackTrail, __instance.aimingBone.position, __instance.transform.rotation).GetComponent<LineRenderer>();
+                component1.SetPosition(0, __instance.aimingBone.position);
+                RaycastHit[] raycastHitArray = Physics.SphereCastAll(__instance.aimingBone.position, 5f, Vector3.down, Vector3.Distance(__instance.aimingBone.position, hitInfo.point), (int)LayerMaskDefaults.Get(LMD.EnemiesAndPlayer));
+                foreach (RaycastHit raycastHit in raycastHitArray)
+                {
+                    if (raycastHit.collider.gameObject.tag == "Player")
+                    {
+                        owoSkin.LOG($"SisyphusPrime DropAttackActivate - {raycastHit.point}");
+                    }
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(SisyphusPrime), "RiderKickActivate")]
+        public class OnSisyphusPrimeKick
+        {
+            [HarmonyPostfix]
+            public static void Postfix(SisyphusPrime __instance)
+            {
+                RaycastHit hitInfo;
+                Physics.Raycast(__instance.aimingBone.position, __instance.transform.forward, out hitInfo, 250f, (int)LayerMaskDefaults.Get(LMD.Environment));
+                LineRenderer component1 = Instantiate<GameObject>(__instance.attackTrail, __instance.aimingBone.position, __instance.transform.rotation).GetComponent<LineRenderer>();
+                component1.SetPosition(0, __instance.aimingBone.position);
+                RaycastHit[] raycastHitArray = Physics.SphereCastAll(__instance.aimingBone.position, 5f, __instance.transform.forward, Vector3.Distance(__instance.aimingBone.position, hitInfo.point), (int)LayerMaskDefaults.Get(LMD.EnemiesAndPlayer));
+                foreach (RaycastHit raycastHit in raycastHitArray)
+                {
+                    if (raycastHit.collider.gameObject.tag == "Player")
+                    {
+                        owoSkin.LOG($"SisyphusPrime RiderKickActivate - {raycastHit.point}");
+
+                    }
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(SwingCheck2), "CheckCollision")]
+        public class OnSwingCheck2
+        {
+            [HarmonyPrefix]
+            public static void Prefix(out int __state)
+            {
+                //This is bad. Really bad. but I'm gonna go with it!
+                __state = MonoSingleton<NewMovement>.Instance.hp;
+            }
+            [HarmonyPostfix]
+            public static void Postfix(int __state, SwingCheck2 __instance)
+            {
+                int damage = __state - MonoSingleton<NewMovement>.Instance.hp;
+                if (damage > 0)
+                {
+                    owoSkin.LOG($"SwingCheck2 CheckCollision - {__instance.transform.position}");
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(ThrownSword), "OnTriggerEnter")]
+        public class OnThrownSword
+        {
+            [HarmonyPrefix]
+            public static void Prefix(out int __state)
+            {
+                //This is bad. Really bad. but I'm gonna go with it!
+                __state = MonoSingleton<NewMovement>.Instance.hp;
+            }
+            [HarmonyPostfix]
+            public static void Postfix(int __state, ThrownSword __instance)
+            {
+                int damage = __state - MonoSingleton<NewMovement>.Instance.hp;
+                if (damage > 0)
+                {
+                    owoSkin.LOG($"ThrownSword OnTriggerEnter - {__instance.transform.position}");
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(VirtueInsignia), "OnTriggerEnter")]
+        public class OnVirtueInsignia
+        {
+            [HarmonyPrefix]
+            public static void Prefix(out int __state)
+            {
+                //This is bad. Really bad. but I'm gonna go with it!
+                __state = MonoSingleton<NewMovement>.Instance.hp;
+            }
+            [HarmonyPostfix]
+            public static void Postfix(int __state, VirtueInsignia __instance)
+            {
+                int damage = __state - MonoSingleton<NewMovement>.Instance.hp;
+                if (damage > 0)
+                {
+                    owoSkin.LOG($"VirtueInsignia OnTriggerEnter - {__instance.transform.position}");
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(Wicked), "OnCollisionEnter")]
+        public class OnWicked
+        {
+            [HarmonyPrefix]
+            public static void Prefix(out int __state)
+            {
+                //This is bad. Really bad. but I'm gonna go with it!
+                __state = MonoSingleton<NewMovement>.Instance.hp;
+            }
+            [HarmonyPostfix]
+            public static void Postfix(int __state, Wicked __instance)
+            {
+                int damage = __state - MonoSingleton<NewMovement>.Instance.hp;
+                if (damage > 0)
+                {
+                    owoSkin.LOG($"Wicked OnCollisionEnter");
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(SceneHelper), "LoadScene")]
+        public class HeartBeatWicked
+        {
+            [HarmonyPostfix]
+            public static void Postfix(string sceneName)
+            {
+                owoSkin.LOG($"SCENE NAME - {sceneName}");
+
+                if (sceneName == "Level 0-S")
+                {
+                    //owoSkin.StartHeartBeat();
+                    owoSkin.LOG($"Start HeartBeat");
+                }
+                else
+                {
+                    //owoSkin.StopHeartBeat();
+                    owoSkin.LOG($"Stop HeartBeat");
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(GroundCheck), "OnTriggerEnter")]
+        public class OnGroundCheck
+        {
+            [HarmonyPrefix]
+            public static void Prefix(GroundCheck __instance)
+            {
+                if (__instance.nmov.fallSpeed <= -92)
+                {
+                    owoSkin.LOG($"GroundCheck OnTriggerEnter");
+                }
+            }
+        }
     }
 }
+
+
+
+
+
