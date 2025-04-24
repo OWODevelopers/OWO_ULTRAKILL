@@ -33,104 +33,6 @@ namespace OWO_ULTRAKILL
             harmony.PatchAll();
         }
 
-        #region Minos
-
-
-        [HarmonyPatch(typeof(MinosPrime), "DropAttackActivate")]
-        public class OnMinosPrime
-        {
-            [HarmonyPostfix]
-            public static void Postfix(MinosPrime __instance)
-            {
-                RaycastHit hitInfo;
-                Physics.Raycast(__instance.aimingBone.position, Vector3.down, out hitInfo, 250f, (int)LayerMaskDefaults.Get(LMD.Environment));
-                LineRenderer component1 = Instantiate<GameObject>(__instance.attackTrail, __instance.aimingBone.position, __instance.transform.rotation).GetComponent<LineRenderer>();
-                component1.SetPosition(0, __instance.aimingBone.position);
-                RaycastHit[] raycastHitArray = Physics.SphereCastAll(__instance.aimingBone.position, 5f, Vector3.down, Vector3.Distance(__instance.aimingBone.position, hitInfo.point), (int)LayerMaskDefaults.Get(LMD.EnemiesAndPlayer));
-                bool flag = false;
-                List<EnemyIdentifier> enemyIdentifierList = new List<EnemyIdentifier>();
-                foreach (RaycastHit raycastHit in raycastHitArray)
-                {
-                    if (raycastHit.collider.gameObject.tag == "Player" && !flag)
-                    {
-                        owoSkin.LOG($"MinosPrime DropAttackActivate - {raycastHit.point}");
-
-                    }
-                }
-            }
-        }
-
-        [HarmonyPatch(typeof(MinosPrime), "RiderKickActivate")]
-        public class OnMinosPrimeKick
-        {
-            [HarmonyPostfix]
-            public static void Postfix(MinosPrime __instance)
-            {
-                RaycastHit hitInfo;
-                Physics.Raycast(__instance.aimingBone.position, __instance.transform.forward, out hitInfo, 250f, (int)LayerMaskDefaults.Get(LMD.Environment));
-                LineRenderer component1 = Instantiate<GameObject>(__instance.attackTrail, __instance.aimingBone.position, __instance.transform.rotation).GetComponent<LineRenderer>();
-                component1.SetPosition(0, __instance.aimingBone.position);
-                RaycastHit[] raycastHitArray = Physics.SphereCastAll(__instance.aimingBone.position, 5f, __instance.transform.forward, Vector3.Distance(__instance.aimingBone.position, hitInfo.point), (int)LayerMaskDefaults.Get(LMD.EnemiesAndPlayer));
-                bool flag = false;
-                foreach (RaycastHit raycastHit in raycastHitArray)
-                {
-                    if (raycastHit.collider.gameObject.tag == "Player" && !flag)
-                    {
-                        owoSkin.LOG($"MinosPrime RiderKickActivate - {raycastHit.point}");
-                    }
-                }
-            }
-        }
-
-        #endregion
-
-        #region Sisyphus
-
-        [HarmonyPatch(typeof(SisyphusPrime), "DropAttackActivate")]
-        public class OnSisyphusPrime
-        {
-            [HarmonyPostfix]
-            public static void Postfix(SisyphusPrime __instance)
-            {
-                RaycastHit hitInfo;
-                Physics.Raycast(__instance.aimingBone.position, Vector3.down, out hitInfo, 250f, (int)LayerMaskDefaults.Get(LMD.Environment));
-                LineRenderer component1 = Instantiate<GameObject>(__instance.attackTrail, __instance.aimingBone.position, __instance.transform.rotation).GetComponent<LineRenderer>();
-                component1.SetPosition(0, __instance.aimingBone.position);
-                RaycastHit[] raycastHitArray = Physics.SphereCastAll(__instance.aimingBone.position, 5f, Vector3.down, Vector3.Distance(__instance.aimingBone.position, hitInfo.point), (int)LayerMaskDefaults.Get(LMD.EnemiesAndPlayer));
-                foreach (RaycastHit raycastHit in raycastHitArray)
-                {
-                    if (raycastHit.collider.gameObject.tag == "Player")
-                    {
-                        owoSkin.LOG($"SisyphusPrime DropAttackActivate - {raycastHit.point}");
-                    }
-                }
-            }
-        }
-
-        [HarmonyPatch(typeof(SisyphusPrime), "RiderKickActivate")]
-        public class OnSisyphusPrimeKick
-        {
-            [HarmonyPostfix]
-            public static void Postfix(SisyphusPrime __instance)
-            {
-                RaycastHit hitInfo;
-                Physics.Raycast(__instance.aimingBone.position, __instance.transform.forward, out hitInfo, 250f, (int)LayerMaskDefaults.Get(LMD.Environment));
-                LineRenderer component1 = Instantiate<GameObject>(__instance.attackTrail, __instance.aimingBone.position, __instance.transform.rotation).GetComponent<LineRenderer>();
-                component1.SetPosition(0, __instance.aimingBone.position);
-                RaycastHit[] raycastHitArray = Physics.SphereCastAll(__instance.aimingBone.position, 5f, __instance.transform.forward, Vector3.Distance(__instance.aimingBone.position, hitInfo.point), (int)LayerMaskDefaults.Get(LMD.EnemiesAndPlayer));
-                foreach (RaycastHit raycastHit in raycastHitArray)
-                {
-                    if (raycastHit.collider.gameObject.tag == "Player")
-                    {
-                        owoSkin.LOG($"SisyphusPrime RiderKickActivate - {raycastHit.point}");
-
-                    }
-                }
-            }
-        }
-
-        #endregion
-
         #region Movement
 
         [HarmonyPatch(typeof(GroundCheck), "OnTriggerEnter")]
@@ -315,7 +217,6 @@ namespace OWO_ULTRAKILL
             [HarmonyPrefix]
             public static void Prefix(out int __state)
             {
-                //This is bad. Really bad. but I'm gonna go with it!
                 __state = MonoSingleton<NewMovement>.Instance.hp;
             }
             [HarmonyPostfix]
@@ -335,7 +236,6 @@ namespace OWO_ULTRAKILL
             [HarmonyPrefix]
             public static void Prefix(out int __state)
             {
-                //This is bad. Really bad. but I'm gonna go with it!
                 __state = MonoSingleton<NewMovement>.Instance.hp;
             }
             [HarmonyPostfix]
@@ -356,7 +256,6 @@ namespace OWO_ULTRAKILL
             [HarmonyPrefix]
             public static void Prefix(out int __state)
             {
-                //This is bad. Really bad. but I'm gonna go with it!
                 __state = MonoSingleton<NewMovement>.Instance.hp;
             }
             [HarmonyPostfix]
@@ -381,7 +280,6 @@ namespace OWO_ULTRAKILL
             [HarmonyPrefix]
             public static void Prefix(out int __state)
             {
-                //This is bad. Really bad. but I'm gonna go with it!
                 __state = MonoSingleton<NewMovement>.Instance.hp;
             }
             [HarmonyPostfix]
@@ -410,7 +308,6 @@ namespace OWO_ULTRAKILL
             [HarmonyPrefix]
             public static void Prefix(out int __state)
             {
-                //This is bad. Really bad. but I'm gonna go with it!
                 __state = MonoSingleton<NewMovement>.Instance.hp;
             }
             [HarmonyPostfix]
@@ -533,26 +430,6 @@ namespace OWO_ULTRAKILL
 
         #endregion
 
-        [HarmonyPatch(typeof(SceneHelper), "LoadScene")]
-        public class HeartBeatWicked
-        {
-            [HarmonyPostfix]
-            public static void Postfix(string sceneName)
-            {
-                owoSkin.LOG($"SCENE NAME - {sceneName}");
-
-                if (sceneName == "Level 0-S")
-                {
-                    //owoSkin.StartHeartBeat();
-                    owoSkin.LOG($"SceneHelper Level 0-S");
-                }
-                else
-                {
-                    //owoSkin.StopHeartBeat();
-                    owoSkin.LOG($"SceneHelper NoN Level 0-S");
-                }
-            }
-        }
 
 
 
