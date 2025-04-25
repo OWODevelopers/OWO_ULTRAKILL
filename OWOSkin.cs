@@ -161,7 +161,7 @@ namespace OWO_ULTRAKILL
             Sensation toSend = GetBackedId("Ultra Speed");
             if (toSend == null) return;
 
-            Muscle[] musclesList = rightRecoilMuscles;
+            Muscle[] musclesList = Muscle.Back;
             LOG($"########## {ultraAngle}");
             switch (ultraAngle){
                 case float a when (a > 135 && a <= 225):
