@@ -21,6 +21,8 @@ namespace OWO_ULTRAKILL
 
         public static OWOSkin owoSkin;
 
+        public static bool startDodging;
+
 
         private void Awake()
         {
@@ -45,7 +47,7 @@ namespace OWO_ULTRAKILL
                 NewMovement nmov = Traverse.Create(__instance).Field("nmov").GetValue<NewMovement>();
                 float fallSpeed = Traverse.Create(nmov).Field("fallSpeed").GetValue<float>();
                 owoSkin.LOG($"GroundCheck FallSpeed - {fallSpeed}");
-
+                if (fallSpeed == 0) return;
                 if (fallSpeed <= -92)
                 {
                     owoSkin.LOG($"GroundCheck OnTriggerEnter");
@@ -97,17 +99,59 @@ namespace OWO_ULTRAKILL
             }
         }
         
-        [HarmonyPatch(typeof(NewMovement), "Dodge")]
+        [HarmonyPatch(typeof(NewMovement), "Update")]
         public class OnDodge
         {
             [HarmonyPostfix]
             public static void Postfix(NewMovement __instance)
             {
                 if (__instance.modNoDashSlide) return;
-                owoSkin.LOG($"NewMovement Dodge");
+
+                float boostLeft = Traverse.Create(__instance).Field("boostLeft").GetValue<float>();
+
+                if (MonoSingleton<InputManager>.Instance.InputSource.Dodge.WasPerformedThisFrame && __instance.activated && !__instance.slowMode && !GameStateManager.Instance.PlayerInputLocked && boostLeft >= 100f)
+                {
+                    startDodging = true;                    
+                }
+
+                
+            }
+        } 
+        
+        [HarmonyPatch(typeof(NewMovement), "Dodge")]
+        public class OnDodgea
+        {
+            [HarmonyPostfix]
+            public static void Postfix(NewMovement __instance)
+            {
+                if (__instance.modNoDashSlide) return;
+
+                if (!startDodging) return;
+
+                startDodging = false;
+
+                Vector3 movementDirection2 = Traverse.Create(__instance).Field("movementDirection2").GetValue<Vector3>();
+
+                if (__instance.dodgeDirection == __instance.transform.forward)
+                {
+                    owoSkin.LOG($"NewMovement Dodge Forward - Movement Direction: {movementDirection2} - Dodge Direction: {__instance.dodgeDirection} ");
+                }
+                else if (__instance.dodgeDirection == __instance.transform.forward * -1f)
+                {
+                    owoSkin.LOG($"NewMovement Dodge Backward");
+                }
+                else if (__instance.dodgeDirection == __instance.transform.right)
+                {
+                    owoSkin.LOG($"NewMovement Dodge Right");
+                }
+                else
+                {
+                    owoSkin.LOG($"NewMovement Dodge Left");
+                }
             }
         }
-        
+
+        //unused?
         [HarmonyPatch(typeof(NewMovement), "Launch")]
         public class OnLaunch
         {
@@ -585,6 +629,7 @@ namespace OWO_ULTRAKILL
             [HarmonyPostfix]
             public static void Postfix(Shotgun __instance)
             {
+                owoSkin.LOG($"Shotgun Shoot SP - Variation: {__instance.variation} - PrimaryCharge: {__instance.primaryCharge}");
             }
         }
         
@@ -594,6 +639,8 @@ namespace OWO_ULTRAKILL
             [HarmonyPostfix]
             public static void Postfix(Shotgun __instance)
             {
+                owoSkin.LOG($"Shotgun Shoot SP - Variation: {__instance.variation} - PrimaryCharge: {__instance.primaryCharge}");
+
             }
         }
 
