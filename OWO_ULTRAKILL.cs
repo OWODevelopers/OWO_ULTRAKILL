@@ -163,17 +163,26 @@ namespace OWO_ULTRAKILL
                 owoSkin.LOG($"NewMovement Launch");
             }
         }
-
-        [HarmonyPatch(typeof(NewMovement), "Parry")]
-        public class OnParry
+        
+        [HarmonyPatch(typeof(Punch), "PunchSuccess")]
+        public class OnPunchSuccess
         {
-            [HarmonyPostfix]
-            public static void Postfix(NewMovement __instance, EnemyIdentifier eid = null)
+            [HarmonyPrefix]
+            public static void Prefix(Vector3 point, Transform target)
             {
-                owoSkin.LOG($"NewMovement Parry - Enemy: {eid}");
+                owoSkin.LOG($"Punch PunchSuccess - {point} - {target}");
             }
         }
 
+        [HarmonyPatch(typeof(Punch), "Parry")]
+        public class OnParry2
+        {
+            [HarmonyPrefix]
+            public static void Prefix()
+            {
+                owoSkin.LOG($"Punch Parry");
+            }
+        }
 
         #endregion
 
