@@ -164,16 +164,16 @@ namespace OWO_ULTRAKILL
             Muscle[] musclesList = rightRecoilMuscles;
             LOG($"########## {ultraAngle}");
             switch (ultraAngle){
-                case float a when (a > -45 && a <= 45):
+                case float a when (a > 135 && a <= 225):
                     musclesList = Muscle.Front;
                     break; //Adelante
-                case float a when (a > -135 && a <= -45):
+                case float a when (a > 45 && a <= 135):
                     musclesList = rightSpeedMuscles;
                     break; //Derecha
-                case float a when (a > 135 && a <= -135):
+                case float a when ((a > 0 && a <= 45) || (a > 315 && a <= 360)):
                     musclesList = Muscle.Back;
                     break; //Atras
-                case float a when (a > 45 && a <= 135):
+                case float a when (a > 225 && a <= 315):
                     musclesList = leftSpeedMuscles;
                     break; //Izquierda
             }
