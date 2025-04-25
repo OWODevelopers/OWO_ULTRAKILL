@@ -185,8 +185,8 @@ namespace OWO_ULTRAKILL
             [HarmonyPostfix]
             public static void Postfix(NewMovement __instance, int damage, bool invincible, float scoreLossMultiplier = 1f, bool explosion = false, bool instablack = false, float hardDamageMultiplier = 0.35f, bool ignoreInvincibility = false)
             {
-                if (__instance.dead || __instance.levelOver || !(!invincible || __instance.gameObject.layer != 15 || ignoreInvincibility) || damage <= 0) return;
-                owoSkin.LOG($"NewMovement GetHurt");
+                if (damage <= 0) return;
+                if (__instance.hp <= 0) owoSkin.Feel("Destruction");
             }
         }
 
@@ -564,38 +564,7 @@ namespace OWO_ULTRAKILL
         }
 
         #endregion
-
-        [HarmonyPatch(typeof(DualWieldPickup), "PickedUp")]
-        public class OnPickedUp
-        {
-            [HarmonyPostfix]
-            public static void Postfix(NewMovement __instance)
-            {
-                owoSkin.Feel("DualWield");
-            }
-        }
-
-        [HarmonyPatch(typeof(NewMovement), "SuperCharge")]
-        public class OnSuperCharge
-        {
-            [HarmonyPostfix]
-            public static void Postfix(NewMovement __instance)
-            {
-                owoSkin.LOG("SuperHeal");
-            }
-        }
-
-        [HarmonyPatch(typeof(NewMovement), "Respawn")]
-        public class OnRespawn
-        {
-            [HarmonyPostfix]
-            public static void Postfix(NewMovement __instance)
-            {
-                owoSkin.Feel("Loading Up");
-            }
-        }
-
-
+        
         #region Weapon
 
         #region Revolver
@@ -750,6 +719,36 @@ namespace OWO_ULTRAKILL
 
 
         #endregion
+
+        [HarmonyPatch(typeof(DualWieldPickup), "PickedUp")]
+        public class OnPickedUp
+        {
+            [HarmonyPostfix]
+            public static void Postfix(NewMovement __instance)
+            {
+                owoSkin.Feel("DualWield");
+            }
+        }
+
+        [HarmonyPatch(typeof(NewMovement), "SuperCharge")]
+        public class OnSuperCharge
+        {
+            [HarmonyPostfix]
+            public static void Postfix(NewMovement __instance)
+            {
+                owoSkin.LOG("SuperHeal");
+            }
+        }
+
+        [HarmonyPatch(typeof(NewMovement), "Respawn")]
+        public class OnRespawn
+        {
+            [HarmonyPostfix]
+            public static void Postfix(NewMovement __instance)
+            {
+                owoSkin.Feel("Loading Up");
+            }
+        }
 
 
     }
