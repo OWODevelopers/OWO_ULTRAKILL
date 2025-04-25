@@ -2,24 +2,23 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
-using UnityEngine;
 
 namespace OWO_ULTRAKILL
 {
     public class OWOSkin
     {
         public bool suitEnabled = false;
-        private bool ultraSpeed = false;
+        private bool ultraSpeedIsEnable = false;
+        private float ultraAngle = 0f;
+        private int ultraIntensity = 0;
 
         public Dictionary<String, Sensation> FeedbackMap = new Dictionary<String, Sensation>();
         private readonly Muscle[] rightRecoilMuscles = {Muscle.Arm_R, Muscle.Pectoral_R, Muscle.Dorsal_R};
         private readonly Muscle[] leftRecoilMuscles = {Muscle.Arm_L, Muscle.Pectoral_L, Muscle.Dorsal_L};
-        //private readonly Muscle[] rightSpeedMuscles = {Muscle.Arm_R, Muscle.Pectoral_R, Muscle.Dorsal_R};
-        //private readonly Muscle[] leftSpeedlMuscles = {Muscle.Arm_R, Muscle.Pectoral_R, Muscle.Dorsal_R};
+        private readonly Muscle[] rightSpeedMuscles = {Muscle.Arm_R, Muscle.Pectoral_R, Muscle.Abdominal_R, Muscle.Dorsal_R, Muscle.Lumbar_R};
+        private readonly Muscle[] leftSpeedMuscles = {Muscle.Arm_L, Muscle.Pectoral_L, Muscle.Abdominal_L, Muscle.Dorsal_L, Muscle.Lumbar_L};        
 
         public OWOSkin()
         {
@@ -155,6 +154,33 @@ namespace OWO_ULTRAKILL
             OWO.Send(toSend.WithPriority(Priority));
         }
 
+        private void FeelSpeed()
+        {
+            Sensation toSend = GetBackedId("Ultra Speed");
+            if (toSend == null) return;
+
+            Muscle[] musclesList = rightRecoilMuscles;
+
+            switch (ultraAngle){
+                case float a when (a > -45 && a <= 45):
+                    musclesList = Muscle.Front;
+                    break; //Adelante
+                case float a when (a > -135 && a <= -45):
+                    musclesList = rightSpeedMuscles;
+                    break; //Derecha
+                case float a when (a > 135 && a <= -135):
+                    musclesList = Muscle.Back;
+                    break; //Atras
+                case float a when (a > 45 && a <= 135):
+                    musclesList = leftSpeedMuscles;
+                    break; //Izquierda
+            }
+
+            toSend = toSend.WithMuscles(musclesList.WithIntensity(ultraIntensity));
+
+            OWO.Send(toSend.WithPriority(0));
+        }
+
         private Sensation GetBackedId(string sensationKey)        
         {
             if (FeedbackMap.ContainsKey(sensationKey))
@@ -175,25 +201,31 @@ namespace OWO_ULTRAKILL
         #region UltraSpeed
         public void StartUltraSpeed()
         {
-            if (ultraSpeed) return;
+            if (ultraSpeedIsEnable) return;
 
-            ultraSpeed = true;
+            ultraSpeedIsEnable = true;
             UltraSpeedFuncAsync();
         }
 
         public void StopUltraSpeed()
         {
-            ultraSpeed = false;
+            ultraSpeedIsEnable = false;
         }
 
         public async Task UltraSpeedFuncAsync()
         {
-            while (ultraSpeed)
+            while (ultraSpeedIsEnable)
             {
-                Feel("Ultra Speed", 0);
+                FeelSpeed();
                 await Task.Delay(200);
             }
         }
+        public void UpdateUltraSpeed(float angle, int intensity)
+        {
+            ultraAngle = angle;
+            ultraIntensity = intensity;
+        }
+
         #endregion
 
         #endregion
