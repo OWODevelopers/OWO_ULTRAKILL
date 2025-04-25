@@ -1,0 +1,15 @@
+0~Jump~100,1,90,0,0,0,|0%100~weapon-0~Movement#
+1~Landing~100,1,90,0,0,0,|0%100~weapon-0~Movement#
+2~Stomp~100,1,90,0,0,0,|0%100~weapon-0~Movement#
+3~Dash~100,1,90,0,0,0,~weapon-0~Movement#
+4~Revolver~100,1,90,0,0,0,|0%100~weapon-0~Recoil#
+5~Shotgun~100,1,90,0,0,0,|0%100~weapon-0~Recoil#
+6~Nailgun~100,1,90,0,0,0,|0%100~weapon-0~Recoil#
+7~Rail Cannon~100,1,90,0,0,0,|0%100~weapon-0~Recoil#
+8~Rocket Launcher~100,1,90,0,0,0,|0%100~weapon-0~Recoil#
+9~Saw~100,1,90,0,0,0,|0%100~weapon-0~Recoil#
+10~Cannon Ball~100,1,90,0,0,0,|0%100~weapon-0~Recoil#
+11~Parry~100,1,90,0,0,0,|0%100~weapon-0~Movement#
+12~Loading Up~50,1,50,100,0,0,|9%80,8%80,3%80,2%80&75,1,75,100,0,0,|0%80,7%80,6%80,1%80,2%40,3%40,9%40,8%40&75,1,75,0,0,0,|0%100,1%100,7%100,6%100,5%45,4%45~weapon-0~Maintenance#
+13~Destruction~100,1,90,0,0,0,|0%100~weapon-0~Maintenance#
+14~Hurt~100,1,90,0,0,0,|0%100~weapon-0~Maintenance
