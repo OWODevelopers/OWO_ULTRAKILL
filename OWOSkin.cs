@@ -65,7 +65,7 @@ namespace OWO_ULTRAKILL
             {
                 suitEnabled = true;
                 LOG("OWO suit connected.");
-                Feel("Heart Beat");
+                Feel("Loading Up");
             }
             if (!suitEnabled) LOG("OWO is not enabled?!?!");
         }

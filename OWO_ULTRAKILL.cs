@@ -89,7 +89,7 @@ namespace OWO_ULTRAKILL
                 {
                     if (__instance.modNoJump || !__instance.groundProperties.canJump) return;
                 }
-                owoSkin.LOG($"NewMovement Jump");
+                owoSkin.Feel("Jump");
             }
         }
 
@@ -99,7 +99,7 @@ namespace OWO_ULTRAKILL
             [HarmonyPostfix]
             public static void Postfix(NewMovement __instance)
             {
-                owoSkin.LOG($"NewMovement WallJump");
+                owoSkin.Feel("Jump");
             }
         }
         
@@ -117,8 +117,6 @@ namespace OWO_ULTRAKILL
                 {
                     startDodging = true;                    
                 }
-
-                
             }
         } 
         
@@ -155,7 +153,6 @@ namespace OWO_ULTRAKILL
             }
         }
 
-        //unused?
         [HarmonyPatch(typeof(NewMovement), "Launch")]
         public class OnLaunch
         {
@@ -574,7 +571,7 @@ namespace OWO_ULTRAKILL
             [HarmonyPostfix]
             public static void Postfix(NewMovement __instance)
             {
-                owoSkin.LOG($"DualWieldPickup PickedUp");
+                owoSkin.Feel("DualWield");
             }
         }
 
@@ -584,7 +581,7 @@ namespace OWO_ULTRAKILL
             [HarmonyPostfix]
             public static void Postfix(NewMovement __instance)
             {
-                owoSkin.LOG($"NewMovement SuperCharge");
+                owoSkin.LOG("SuperHeal");
             }
         }
 
@@ -594,7 +591,7 @@ namespace OWO_ULTRAKILL
             [HarmonyPostfix]
             public static void Postfix(NewMovement __instance)
             {
-                owoSkin.LOG($"NewMovement Respawn");
+                owoSkin.Feel("Loading Up");
             }
         }
 
