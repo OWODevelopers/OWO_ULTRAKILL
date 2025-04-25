@@ -13,6 +13,7 @@ namespace OWO_ULTRAKILL
     public class OWOSkin
     {
         public bool suitEnabled = false;
+        private bool ultraSpeed = false;
 
         public Dictionary<String, Sensation> FeedbackMap = new Dictionary<String, Sensation>();
 
@@ -142,11 +143,37 @@ namespace OWO_ULTRAKILL
             else LOG("Feedback not registered: " + key);
         }
 
+        #region loops
 
+        #region ultraSpeed
+        public void StartUltraSpeed()
+        {
+            if (ultraSpeed) return;
+
+            ultraSpeed = true;
+            UltraSpeedFuncAsync();
+        }
+
+        public void StopUltraSpeed()
+        {
+            ultraSpeed = false;
+        }
+
+        public async Task UltraSpeedFuncAsync()
+        {
+            while (ultraSpeed)
+            {
+                Feel("Ultra Speed", 0);
+                await Task.Delay(200);
+            }
+        }
+        #endregion
+
+        #endregion
 
         public void StopAllHapticFeedback()
         {
-            
+            StopUltraSpeed();
 
             OWO.Stop();
         }
