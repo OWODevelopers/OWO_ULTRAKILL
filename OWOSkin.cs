@@ -16,6 +16,10 @@ namespace OWO_ULTRAKILL
         private bool ultraSpeed = false;
 
         public Dictionary<String, Sensation> FeedbackMap = new Dictionary<String, Sensation>();
+        private readonly Muscle[] rightRecoilMuscles = {Muscle.Arm_R, Muscle.Pectoral_R, Muscle.Dorsal_R};
+        private readonly Muscle[] leftRecoilMuscles = {Muscle.Arm_L, Muscle.Pectoral_L, Muscle.Dorsal_L};
+        //private readonly Muscle[] rightSpeedMuscles = {Muscle.Arm_R, Muscle.Pectoral_R, Muscle.Dorsal_R};
+        //private readonly Muscle[] leftSpeedlMuscles = {Muscle.Arm_R, Muscle.Pectoral_R, Muscle.Dorsal_R};
 
         public OWOSkin()
         {
@@ -126,26 +130,49 @@ namespace OWO_ULTRAKILL
             Plugin.Log.LogInfo(msg);
         }
 
+        #region Feel
+
         public void Feel(String key, int Priority = 0, int intensity = 0)
-        {
-            if (FeedbackMap.ContainsKey(key))
+        {            
+            Sensation toSend = GetBackedId(key);
+            if (toSend == null) return;
+
+            if (intensity != 0)
             {
-                Sensation toSend = FeedbackMap[key];
-
-                if (intensity != 0)
-                {
-                    toSend = toSend.WithMuscles(Muscle.All.WithIntensity(intensity));
-                }
-
-                OWO.Send(toSend.WithPriority(Priority));
+                toSend = toSend.WithMuscles(Muscle.All.WithIntensity(intensity));
             }
 
-            else LOG("Feedback not registered: " + key);
+            OWO.Send(toSend.WithPriority(Priority));          
         }
 
-        #region loops
+        public void FeelWithHand(String key, bool isRightHand = true, int Priority = 0, int intensity = 100)
+        {
+            Sensation toSend = GetBackedId(key);
+            if (toSend == null) return;
 
-        #region ultraSpeed
+            toSend = toSend.WithMuscles(isRightHand ? rightRecoilMuscles.WithIntensity(intensity) : leftRecoilMuscles.WithIntensity(intensity));
+
+            OWO.Send(toSend.WithPriority(Priority));
+        }
+
+        private Sensation GetBackedId(string sensationKey)        
+        {
+            if (FeedbackMap.ContainsKey(sensationKey))
+            {
+                return FeedbackMap[sensationKey];
+            }
+            else
+            {
+                LOG($"Feedback not registered: {sensationKey}");
+                return null;
+            }
+        }
+
+        #endregion
+
+        #region Loops
+
+        #region UltraSpeed
         public void StartUltraSpeed()
         {
             if (ultraSpeed) return;
