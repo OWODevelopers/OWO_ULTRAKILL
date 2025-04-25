@@ -41,16 +41,20 @@ namespace OWO_ULTRAKILL
         [HarmonyPatch(typeof(GroundCheck), "OnTriggerEnter")]
         public class OnGroundCheck
         {
-            [HarmonyPrefix]
-            public static void Prefix(GroundCheck __instance)
+            [HarmonyPostfix]
+            public static void Postfix(GroundCheck __instance)
             {
                 NewMovement nmov = Traverse.Create(__instance).Field("nmov").GetValue<NewMovement>();
                 float fallSpeed = Traverse.Create(nmov).Field("fallSpeed").GetValue<float>();
-                owoSkin.LOG($"GroundCheck FallSpeed - {fallSpeed}");
+                if (!__instance.touchingGround)  return;
                 if (fallSpeed == 0) return;
                 if (fallSpeed <= -92)
                 {
-                    owoSkin.LOG($"GroundCheck OnTriggerEnter");
+                    owoSkin.Feel($"Stomp");
+                }
+                else
+                {
+                    owoSkin.Feel("Landing");
                 }
             }
         }
