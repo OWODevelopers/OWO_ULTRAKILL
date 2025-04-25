@@ -85,6 +85,7 @@ namespace OWO_ULTRAKILL
             [HarmonyPostfix]
             public static void Postfix(NewMovement __instance)
             {
+                owoSkin.StartUltraSpeed();
                 if (__instance.modNoJump || (bool)__instance.groundProperties)
                 {
                     if (__instance.modNoJump || !__instance.groundProperties.canJump) return;
@@ -112,6 +113,21 @@ namespace OWO_ULTRAKILL
                 if (__instance.modNoDashSlide) return;
 
                 float boostLeft = Traverse.Create(__instance).Field("boostLeft").GetValue<float>();
+
+                //owoSkin.LOG($"VELOCITY - VELOCITY NORMALIZED: {__instance.rb.velocity.normalized}--SPEED:{__instance.rb.velocity.magnitude} - PLAYER LOOK: {__instance.transform.forward} - ANGLE: {Vector3.SignedAngle(__instance.rb.velocity.normalized, __instance.transform.forward, Vector3.up)}");
+
+                Vector3 normalizedSpeed = __instance.rb.velocity.normalized;
+                Vector3 playerForward = __instance.transform.forward;
+                int speed = Mathf.FloorToInt(__instance.rb.velocity.magnitude);
+                float angle = Vector3.SignedAngle(__instance.rb.velocity.normalized, __instance.transform.forward, Vector3.up) + 180;
+
+                owoSkin.isPlayerActive = __instance.activated;
+
+
+                if (__instance.activated)
+                {
+                    owoSkin.UpdateUltraSpeed(angle, speed);
+                }
 
                 if (MonoSingleton<InputManager>.Instance.InputSource.Dodge.WasPerformedThisFrame && __instance.activated && !__instance.slowMode && !GameStateManager.Instance.PlayerInputLocked && boostLeft >= 100f)
                 {
@@ -159,6 +175,8 @@ namespace OWO_ULTRAKILL
             [HarmonyPostfix]
             public static void Postfix(NewMovement __instance)
             {
+                owoSkin.StopUltraSpeed();
+
                 if (__instance.modNoDashSlide) return;
                 owoSkin.LOG($"NewMovement Launch");
             }

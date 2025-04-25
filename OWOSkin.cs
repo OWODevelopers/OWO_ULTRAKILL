@@ -10,9 +10,11 @@ namespace OWO_ULTRAKILL
     public class OWOSkin
     {
         public bool suitEnabled = false;
+        public bool isPlayerActive = false;
         private bool ultraSpeedIsEnable = false;
         private float ultraAngle = 0f;
         private int ultraIntensity = 0;
+        
 
         public Dictionary<String, Sensation> FeedbackMap = new Dictionary<String, Sensation>();
         private readonly Muscle[] rightRecoilMuscles = {Muscle.Arm_R, Muscle.Pectoral_R, Muscle.Dorsal_R};
@@ -160,7 +162,7 @@ namespace OWO_ULTRAKILL
             if (toSend == null) return;
 
             Muscle[] musclesList = rightRecoilMuscles;
-
+            LOG($"########## {ultraAngle}");
             switch (ultraAngle){
                 case float a when (a > -45 && a <= 45):
                     musclesList = Muscle.Front;
@@ -239,7 +241,7 @@ namespace OWO_ULTRAKILL
 
         public bool CanFeel() 
         {
-            return suitEnabled;
+            return suitEnabled && isPlayerActive;
         }
     }
 }
