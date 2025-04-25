@@ -176,6 +176,8 @@ namespace OWO_ULTRAKILL
                 case float a when (a > 225 && a <= 315):
                     musclesList = leftSpeedMuscles;
                     break; //Izquierda
+                default:
+                    return;
             }
 
             toSend = toSend.WithMuscles(musclesList.WithIntensity(ultraIntensity));
