@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace OWO_ULTRAKILL
 {
@@ -162,30 +163,48 @@ namespace OWO_ULTRAKILL
 
             Sensation toSend = GetBackedId("Ultra Speed");
             if (toSend == null) return;
-            LOG($"### SpeedAngle: {ultraAngle}");
+            //LOG($"### SpeedAngle: {ultraAngle}");
 
-            Muscle[] musclesList = Muscle.Back;
-            switch (ultraAngle){
-                case float a when (a > 135 && a <= 225):
-                    musclesList = Muscle.Front;
-                    break; //Adelante
-                case float a when (a > 45 && a <= 135):
-                    musclesList = rightSpeedMuscles;
-                    break; //Derecha
-                case float a when ((a >= 0 && a <= 45) || (a > 315 && a <= 360)):
-                    musclesList = Muscle.Back;
-                    break; //Atras
-                case float a when (a > 225 && a <= 315):
-                    musclesList = leftSpeedMuscles;
-                    break; //Izquierda
-                default:
-                    return;
-            }
+            Muscle[] musclesList = GetMuscleAngle(ultraAngle);
 
             toSend = toSend.WithMuscles(musclesList.WithIntensity(ultraIntensity));
 
             OWO.Send(toSend.WithPriority(0));
         }
+
+        public void FeelDamage(Vector3 hitForward)
+        {
+            Sensation toSend = GetBackedId("Impact");
+
+            Transform player = MonoSingleton<NewMovement>.Instance.transform;
+
+            float angleHit = Vector3.SignedAngle(-hitForward.normalized, player.forward, Vector3.up) + 180;
+
+            Muscle[] musclesList = GetMuscleAngle(angleHit);
+            
+
+            toSend = toSend.WithMuscles(musclesList);
+
+            OWO.Send(toSend.WithPriority(3));
+        }
+
+        private Muscle[] GetMuscleAngle(float angle)
+        {
+            switch (angle)
+            {
+                case float a when (a > 135 && a <= 225):
+                    return Muscle.Front;
+                case float a when (a > 45 && a <= 135):
+                    return rightSpeedMuscles;
+                case float a when ((a >= 0 && a <= 45) || (a > 315 && a <= 360)):
+                    return Muscle.Back;
+                case float a when (a > 225 && a <= 315):
+                    return leftSpeedMuscles;
+                default:
+                    return Muscle.Back;
+            }
+        }
+
 
         private Sensation GetBackedId(string sensationKey)        
         {

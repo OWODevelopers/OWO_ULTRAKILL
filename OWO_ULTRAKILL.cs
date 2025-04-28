@@ -247,6 +247,7 @@ namespace OWO_ULTRAKILL
                 if (damage > 0)
                 {
                     owoSkin.LOG($"Wicked OnCollisionEnter");
+                    owoSkin.FeelDamage(__instance.transform.forward);
                 }
             }
         }
@@ -266,6 +267,7 @@ namespace OWO_ULTRAKILL
                 if (damage > 0)
                 {
                     owoSkin.LOG($"VirtueInsignia OnTriggerEnter - {__instance.transform.position}");
+                    owoSkin.FeelDamage(__instance.transform.forward);
                 }
             }
         }
@@ -286,6 +288,7 @@ namespace OWO_ULTRAKILL
                 if (damage > 0)
                 {
                     owoSkin.LOG($"ThrownSword OnTriggerEnter - {__instance.transform.position}");
+                    owoSkin.FeelDamage(__instance.transform.forward);
                 }
             }
         }
@@ -304,7 +307,10 @@ namespace OWO_ULTRAKILL
                 int damage = __state - MonoSingleton<NewMovement>.Instance.hp;
                 if (damage > 0)
                 {
-                    owoSkin.LOG($"SwingCheck2 CheckCollision - {__instance.transform.position}");
+                    owoSkin.LOG($"SwingCheck2 CheckCollision - {__instance.transform.forward} --- {__instance.knockBackDirection}");
+
+                    owoSkin.FeelDamage(__instance.transform.forward);
+
                 }
             }
         }
@@ -318,12 +324,13 @@ namespace OWO_ULTRAKILL
                 __state = MonoSingleton<NewMovement>.Instance.hp;
             }
             [HarmonyPostfix]
-            public static void Postfix(int __state, RaycastHit currentHit)
+            public static void Postfix(int __state,RevolverBeam __instance, RaycastHit currentHit)
             {
                 int damage = __state - MonoSingleton<NewMovement>.Instance.hp;
                 if (damage > 0)
                 {
                     owoSkin.LOG($"RevolverBeam ExecuteHits - {currentHit.point}");
+                    owoSkin.FeelDamage(__instance.transform.forward);
                 }
             }
         }
@@ -342,7 +349,8 @@ namespace OWO_ULTRAKILL
                 int damage = __state - MonoSingleton<NewMovement>.Instance.hp;
                 if (damage > 0)
                 {
-                    owoSkin.LOG($"PhysicalShockwave ChekCollision");
+                    owoSkin.LOG($"PhysicalShockwave CheckCollision");
+                    owoSkin.Feel("Earthquake");
                 }
             }
         }
@@ -362,6 +370,7 @@ namespace OWO_ULTRAKILL
                 if (damage > 0)
                 {
                     owoSkin.LOG($"Nail OnCollisionEnter - {__instance.transform.position}");
+                    owoSkin.FeelDamage(__instance.transform.forward);
 
                 }
             }
@@ -383,6 +392,7 @@ namespace OWO_ULTRAKILL
                 if (damage > 0)
                 {
                     owoSkin.LOG($"MassSpear OnTriggerEnter - {__instance.transform.position}");
+                    owoSkin.FeelDamage(__instance.transform.forward);
                 }
             }
         }
@@ -402,6 +412,7 @@ namespace OWO_ULTRAKILL
                 if (damage > 0)
                 {
                     owoSkin.LOG($"HurtZone FixedUpdate - {__instance.transform.position}");
+                    owoSkin.Feel("DOT");
                 }
             }
         }
@@ -422,6 +433,7 @@ namespace OWO_ULTRAKILL
                 {
                     owoSkin.LOG($"DeathZone GotHit - {__instance.transform.position}");
 
+                    owoSkin.Feel("Fall");
                 }
             }
         }
@@ -445,6 +457,7 @@ namespace OWO_ULTRAKILL
                     //owoSkin.Feel("ExplosionBelly", intensity);
 
                     owoSkin.LOG($"Explosion Collide");
+                    owoSkin.Feel("Explosion");
                 }
             }
         }
@@ -473,6 +486,7 @@ namespace OWO_ULTRAKILL
                     if (Physics.Raycast(__instance.transform.position, __instance.transform.forward, out hitInfo, float.PositiveInfinity, (int)layerMask, QueryTriggerInteraction.Ignore))
                     {
                         owoSkin.LOG($"BeamgunBeam Position - {hitInfo.point}");
+                        owoSkin.FeelDamage(__instance.transform.forward);
                     }
                 }
             }
@@ -493,6 +507,7 @@ namespace OWO_ULTRAKILL
                 if (damage > 0)
                 {
                     owoSkin.LOG($"Projectile TimeToDie hit position - {__instance.transform.position}");
+                    owoSkin.FeelDamage(__instance.transform.forward);
                 }
             }
         }
@@ -516,6 +531,7 @@ namespace OWO_ULTRAKILL
                     {
                         owoSkin.LOG($"BlackHoleProjectile OnTriggerEnter");
 
+                        owoSkin.Feel("Explosion");
                     }
                 }
             }
@@ -537,7 +553,7 @@ namespace OWO_ULTRAKILL
                 if (damage > 0)
                 {
                     owoSkin.LOG($"Coin Shoot at Player - {__instance.transform.position}");
-
+                    owoSkin.FeelDamage(__instance.transform.forward);
                 }
             }
         }
@@ -577,6 +593,7 @@ namespace OWO_ULTRAKILL
                             if (raycastHitArray[index].collider.gameObject.tag == "Player" && __instance.canHitPlayer && (double)playerCooldown <= 0.0)
                             {
                                 owoSkin.LOG($"Coninuous beam impact position - {raycastHitArray[index].point}");
+                                owoSkin.FeelDamage(raycastHitArray[index].point);
                             }
                         }
                     }
@@ -600,7 +617,9 @@ namespace OWO_ULTRAKILL
                 {
                     owoSkin.LOG($"FireZone OnTriggerStay - {__instance.transform.position}");
 
+                    owoSkin.Feel("Fire");
                 }
+
             }
         }
 
