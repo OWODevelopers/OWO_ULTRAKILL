@@ -2,14 +2,17 @@
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
+using SettingsMenu.Components;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using static System.Net.Mime.MediaTypeNames;
+using Newtonsoft.Json;
 
 namespace OWO_ULTRAKILL
 {
@@ -24,6 +27,8 @@ namespace OWO_ULTRAKILL
         public static bool startDodging;
         public static ConfigEntry<bool> speedEffects;
 
+        public Dictionary<string, object> prefMap;
+
 
         private void Awake()
         {
@@ -35,6 +40,8 @@ namespace OWO_ULTRAKILL
 
             var harmony = new Harmony("owo.patch.ultrakill");
             harmony.PatchAll();
+
+            
         }
 
         #region Movement
@@ -825,6 +832,48 @@ namespace OWO_ULTRAKILL
             {
                 owoSkin.isPlayerActive = false;
                 owoSkin.StopAllHapticFeedback();
+            }
+        } 
+
+        [HarmonyPatch(typeof(SettingsMenu.Components.SettingsMenu), "OnPrefChanged")]
+        public class OnPrefChanged
+        {
+            [HarmonyPostfix]
+            public static void Postfix(SettingsMenu.Components.SettingsMenu __instance, string key, object value)
+            {
+                owoSkin.LOG($"## ON SETTINGS CHANGED: KEY: {key} - VALUE: {value}");
+
+                SettingsLogicBase[] array = Traverse.Create(__instance).Field("settingsLogic").GetValue<SettingsLogicBase[]>();
+
+                for (int i = 0; i < array.Length; i++)
+                {
+                    //array[i].OnPrefChanged(key, value);
+                    owoSkin.LOG($"## {array[i].name}");
+
+                }
+
+                if (key == "weaponHoldPosition")
+                    if ((int)value == 2) owoSkin.curentHand = "Left";
+                    else owoSkin.curentHand = "Right";
+
+            }
+        }
+
+        [HarmonyPatch(typeof(PrefsManager), "Initialize")]
+        public class OnInitialize
+        {
+            [HarmonyPostfix]
+            public static void Postfix(PrefsManager __instance)
+            {
+
+                __instance.prefMap.TryGetValue("weaponHoldPosition", out var value);
+
+                owoSkin.LOG($" #### ## CURRENT HAND{value}");
+
+                if ((long)value == 2) owoSkin.curentHand = "Left";
+                else owoSkin.curentHand = "Right";
+                owoSkin.LOG($" #### ## CURRENT HAND{owoSkin.curentHand}");
+
             }
         }
 

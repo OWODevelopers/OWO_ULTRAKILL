@@ -15,7 +15,8 @@ namespace OWO_ULTRAKILL
         private bool ultraSpeedIsEnable = false;
         private float ultraAngle = 0f;
         private int ultraIntensity = 0;
-        
+
+        public string curentHand; 
 
         public Dictionary<String, Sensation> FeedbackMap = new Dictionary<String, Sensation>();
         private readonly Muscle[] rightRecoilMuscles = {Muscle.Arm_R, Muscle.Pectoral_R, Muscle.Dorsal_R};
