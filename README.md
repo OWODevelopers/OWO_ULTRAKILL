@@ -15,7 +15,7 @@ Want to get an OWO Suit? [Look here](https://owogame.com/shop/).
 - Enjoy your inmersive experience! 😊
 
 # Configuration
-You can disable the speed sensations changing the varaible *SpeedEffects* to false in  
+You can disable the movement sensations changing the varaible *MovementEffects* to false in  
 "ULTRAKILL/BepInEx/config/org.bepinex.plugins.OWO_ULTRAKILL.cfg"
 
 # Featured effect
