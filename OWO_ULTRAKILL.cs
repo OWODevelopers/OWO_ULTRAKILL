@@ -45,13 +45,15 @@ namespace OWO_ULTRAKILL
             [HarmonyPostfix]
             public static void Postfix(GroundCheck __instance)
             {
+                if (!owoSkin.CanFeel()) return;
+
                 NewMovement nmov = Traverse.Create(__instance).Field("nmov").GetValue<NewMovement>();
                 float fallSpeed = Traverse.Create(nmov).Field("fallSpeed").GetValue<float>();
                 if (!__instance.touchingGround)  return;
                 if (fallSpeed == 0) return;
                 if (fallSpeed <= -92)
                 {
-                    owoSkin.Feel($"Stomp");
+                    owoSkin.Feel("Stomp");
                 }
                 else
                 {
@@ -86,7 +88,8 @@ namespace OWO_ULTRAKILL
             [HarmonyPostfix]
             public static void Postfix(NewMovement __instance)
             {
-                owoSkin.StartUltraSpeed();
+                if (!owoSkin.CanFeel()) return;
+                
                 if (__instance.modNoJump || (bool)__instance.groundProperties)
                 {
                     if (__instance.modNoJump || !__instance.groundProperties.canJump) return;
@@ -101,6 +104,8 @@ namespace OWO_ULTRAKILL
             [HarmonyPostfix]
             public static void Postfix(NewMovement __instance)
             {
+                if (!owoSkin.CanFeel()) return;
+
                 owoSkin.Feel("Jump");
             }
         }
@@ -111,7 +116,9 @@ namespace OWO_ULTRAKILL
             [HarmonyPostfix]
             public static void Postfix(NewMovement __instance)
             {
-                if (__instance.modNoDashSlide || !speedEffects.Value) return;
+                owoSkin.isPlayerActive = __instance.activated;
+
+                if (!speedEffects.Value) return;
 
                 float boostLeft = Traverse.Create(__instance).Field("boostLeft").GetValue<float>();
 
@@ -122,7 +129,6 @@ namespace OWO_ULTRAKILL
                 int speed = Mathf.FloorToInt(__instance.rb.velocity.magnitude);
                 float angle = Vector3.SignedAngle(__instance.rb.velocity.normalized, __instance.transform.forward, Vector3.up) + 180;
 
-                owoSkin.isPlayerActive = __instance.activated;
 
 
                 if (__instance.activated)
@@ -214,7 +220,12 @@ namespace OWO_ULTRAKILL
             public static void Postfix(NewMovement __instance, int damage, bool invincible, float scoreLossMultiplier = 1f, bool explosion = false, bool instablack = false, float hardDamageMultiplier = 0.35f, bool ignoreInvincibility = false)
             {
                 if (damage <= 0) return;
-                if (__instance.hp <= 0) owoSkin.Feel("Destruction");
+                if (__instance.hp <= 0)
+                {
+                    owoSkin.Feel("Destruction");
+                    owoSkin.isPlayerActive = false;
+                }
+
             }
         }
 
@@ -754,6 +765,8 @@ namespace OWO_ULTRAKILL
             [HarmonyPostfix]
             public static void Postfix(NewMovement __instance)
             {
+                if (!owoSkin.CanFeel()) return;
+
                 owoSkin.Feel("DualWield");
             }
         }
@@ -773,8 +786,13 @@ namespace OWO_ULTRAKILL
         {
             [HarmonyPostfix]
             public static void Postfix(NewMovement __instance)
-            {
+            {               
                 owoSkin.Feel("Loading Up");
+
+                if (speedEffects.Value)
+                {
+                    owoSkin.StartUltraSpeed();
+                }
             }
         }
 
