@@ -14,8 +14,20 @@ Want to get an OWO Suit? [Look here](https://owogame.com/shop/).
 - Extract the mod zip and place all files and the owo folder into the BepInEx\Plugins directory of your game installation.
 - Enjoy your inmersive experience! 😊
 
+# Configuration
+You can disable the movement sensations by changing the variable *MovementEffects* to false in  
+"ULTRAKILL/BepInEx/config/org.bepinex.plugins.OWO_ULTRAKILL.cfg"
+
 # Featured effect
-- Lorem Ipsum
+- Loading Up
+- Jump and Landing
+- Stomp
+- Movement direction
+- Different Recoils
+- Parry
+- Destruction (Death 🤖💀)
+- Hurt
+
 
 # Manual Connection
 If you are having trouble with the automatic connection, create a .txt file called OWO_Manual_IP.txt  
