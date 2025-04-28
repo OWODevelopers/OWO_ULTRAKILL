@@ -158,6 +158,8 @@ namespace OWO_ULTRAKILL
 
         private void FeelSpeed()
         {
+            if (ultraIntensity < 10) return;
+
             Sensation toSend = GetBackedId("Ultra Speed");
             if (toSend == null) return;
             LOG($"### SpeedAngle: {ultraAngle}");
@@ -170,7 +172,7 @@ namespace OWO_ULTRAKILL
                 case float a when (a > 45 && a <= 135):
                     musclesList = rightSpeedMuscles;
                     break; //Derecha
-                case float a when ((a > 0 && a <= 45) || (a > 315 && a <= 360)):
+                case float a when ((a >= 0 && a <= 45) || (a > 315 && a <= 360)):
                     musclesList = Muscle.Back;
                     break; //Atras
                 case float a when (a > 225 && a <= 315):

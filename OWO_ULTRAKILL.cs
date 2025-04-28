@@ -31,7 +31,7 @@ namespace OWO_ULTRAKILL
             Logger.LogMessage("OWO_ULTRAKILL plugin is loaded!");
 
             owoSkin = new OWOSkin();
-
+            speedEffects = Config.Bind("General", "speedEffects", true);
 
             var harmony = new Harmony("owo.patch.ultrakill");
             harmony.PatchAll();
@@ -118,7 +118,8 @@ namespace OWO_ULTRAKILL
             {
                 owoSkin.isPlayerActive = __instance.activated;
 
-                if (!speedEffects.Value) return;
+                if (!speedEffects.Value) return;                       
+                owoSkin.StartUltraSpeed();
 
                 float boostLeft = Traverse.Create(__instance).Field("boostLeft").GetValue<float>();
 
@@ -222,6 +223,7 @@ namespace OWO_ULTRAKILL
                 if (damage <= 0) return;
                 if (__instance.hp <= 0)
                 {
+                    owoSkin.StopAllHapticFeedback();
                     owoSkin.Feel("Destruction");
                     owoSkin.isPlayerActive = false;
                 }
@@ -795,7 +797,17 @@ namespace OWO_ULTRAKILL
                 }
             }
         }
-
+        
+        [HarmonyPatch(typeof(PauseMenu), "OnEnable")]
+        public class PauseEnable
+        {
+            [HarmonyPostfix]
+            public static void Postfix()
+            {
+                owoSkin.isPlayerActive = false;
+                owoSkin.StopAllHapticFeedback();
+            }
+        }
 
     }
 }
