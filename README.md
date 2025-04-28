@@ -14,6 +14,10 @@ Want to get an OWO Suit? [Look here](https://owogame.com/shop/).
 - Extract the mod zip and place all files and the owo folder into the BepInEx\Plugins directory of your game installation.
 - Enjoy your inmersive experience! 😊
 
+# Configuration
+You can disable the speed sensations changing the varaible *SpeedEffects* to false in  
+"ULTRAKILL/BepInEx/config/org.bepinex.plugins.OWO_ULTRAKILL.cfg"
+
 # Featured effect
 - Lorem Ipsum
 
