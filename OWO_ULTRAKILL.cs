@@ -25,7 +25,7 @@ namespace OWO_ULTRAKILL
 
         public static OWOSkin owoSkin;
         public static bool startDodging;
-        public static ConfigEntry<bool> speedEffects;
+        public static ConfigEntry<bool> movementEffects;
 
         public Dictionary<string, object> prefMap;
 
@@ -36,7 +36,7 @@ namespace OWO_ULTRAKILL
             Logger.LogMessage("OWO_ULTRAKILL plugin is loaded!");
 
             owoSkin = new OWOSkin();
-            speedEffects = Config.Bind("General", "speedEffects", true);
+            movementEffects = Config.Bind("General", "movementEffects", true);
 
             var harmony = new Harmony("owo.patch.ultrakill");
             harmony.PatchAll();
@@ -125,7 +125,7 @@ namespace OWO_ULTRAKILL
             {
                 owoSkin.isPlayerActive = __instance.activated;
 
-                if (!speedEffects.Value) return;                       
+                if (!movementEffects.Value) return;                       
                 owoSkin.StartUltraSpeed();
 
                 float boostLeft = Traverse.Create(__instance).Field("boostLeft").GetValue<float>();
@@ -791,11 +791,23 @@ namespace OWO_ULTRAKILL
         public class OnPickedUp
         {
             [HarmonyPostfix]
-            public static void Postfix(NewMovement __instance)
+            public static void Postfix(DualWieldPickup __instance)
             {
                 if (!owoSkin.CanFeel()) return;
 
                 owoSkin.Feel("DualWield");
+            }
+        }
+        
+        [HarmonyPatch(typeof(DualWield), "EndPowerUp")]
+        public class OnEndPowerUp
+        {
+            [HarmonyPostfix]
+            public static void Postfix(DualWield __instance)
+            {
+                if (!owoSkin.CanFeel()) return;
+
+                owoSkin.Feel("EndPowerUp");
             }
         }
 
@@ -817,7 +829,7 @@ namespace OWO_ULTRAKILL
             {               
                 owoSkin.Feel("Loading Up");
 
-                if (speedEffects.Value)
+                if (movementEffects.Value)
                 {
                     owoSkin.StartUltraSpeed();
                 }
