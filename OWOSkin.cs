@@ -57,7 +57,7 @@ namespace OWO_ULTRAKILL
         {
             LOG("Initializing OWO skin");
 
-            var gameAuth = GameAuth.Create(AllBakedSensations()).WithId("0");
+            var gameAuth = GameAuth.Create(AllBakedSensations()).WithId("98310367");
 
             OWO.Configure(gameAuth);
             string[] myIPs = GetIPsFromFile("OWO_Manual_IP.txt");
