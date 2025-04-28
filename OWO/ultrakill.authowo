@@ -1,6 +1,6 @@
 0~Jump~60,1,60,0,100,0,Fall|9%100,8%100,3%100,2%100~environment-5~Movement
 1~Landing~40,2,100,0,0,0,Land|9%100,8%100,2%100,3%100~environment-5~Movement#
-2~Stomp~100,1,90,0,0,0,|0%100~environment-5~Movement#
+2~Stomp~90,9,100,0,700,0,Boom|3%100,2%100,9%100,8%100,6%100,7%100~environment-5~Movement#
 3~Ultra Speed~100,1,90,0,0,0,~environment-1~Movement#
 4~Parry~100,1,90,0,0,0,|0%100~impact-2~Movement#
 5~Revolver~20,1,50,0,0,0,Shoot|0%100~weapon-2~Recoil#
