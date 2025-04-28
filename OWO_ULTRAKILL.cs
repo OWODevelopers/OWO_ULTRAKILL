@@ -1,4 +1,5 @@
 ﻿using BepInEx;
+using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
 using System;
@@ -20,8 +21,8 @@ namespace OWO_ULTRAKILL
 #pragma warning restore CS0109
 
         public static OWOSkin owoSkin;
-
         public static bool startDodging;
+        public static ConfigEntry<bool> speedEffects;
 
 
         private void Awake()
@@ -110,7 +111,7 @@ namespace OWO_ULTRAKILL
             [HarmonyPostfix]
             public static void Postfix(NewMovement __instance)
             {
-                if (__instance.modNoDashSlide) return;
+                if (__instance.modNoDashSlide || !speedEffects.Value) return;
 
                 float boostLeft = Traverse.Create(__instance).Field("boostLeft").GetValue<float>();
 
