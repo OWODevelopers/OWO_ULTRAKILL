@@ -7,8 +7,8 @@ The OWO Skin is a haptic technology that allows you to feel everything that happ
 
 Want to get an OWO Suit? [Look here](https://owogame.com/shop/).
 
-# Installation [BepinEx_v5.4.XX]
-- Download [BepinEx_v5.4.XX]( https://github.com/BepInEx/BepInEx/releases/tag/v5.4.XX).
+# Installation [BepinEx_v5.4.23.3]
+- Download [BepinEx_v5.4.23.3](https://github.com/BepInEx/BepInEx/releases/tag/v5.4.23.3).
 - Extract the BepinEx zip data on the same folder of the game and run the game once.
 - Download the [lastest release of this mod](https://github.com/OWODevelopers/OWO_ULTRAKILL/releases/latest)
 - Extract the mod zip and place all files and the owo folder into the BepInEx\Plugins directory of your game installation.
