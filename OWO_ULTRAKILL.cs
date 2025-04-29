@@ -840,6 +840,8 @@ namespace OWO_ULTRAKILL
             {
                 if (!owoSkin.CanFeel()) return;
 
+                owoSkin.PunchRecoil();
+
                 if (__instance.heldAction.IsPressed())
                     owoSkin.FeelWithHand("Shotgun", !owoSkin.isRightHanded, 2);                
             }
