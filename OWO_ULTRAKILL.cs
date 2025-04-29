@@ -833,7 +833,7 @@ namespace OWO_ULTRAKILL
                 if (!owoSkin.CanFeel()) return;
 
                 owoSkin.Feel("Power Up");
-                //owoSkin.dualWeapon = true;
+                owoSkin.dualWeapon = true;
             }
         }
 
@@ -845,7 +845,7 @@ namespace OWO_ULTRAKILL
             {
                 if (!owoSkin.CanFeel()) return;
 
-                //owoSkin.dualWeapon = false;
+                owoSkin.dualWeapon = false;
                 //owoSkin.Feel("EndPowerUp");
             }
         }

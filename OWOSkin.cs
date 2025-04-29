@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -17,6 +18,7 @@ namespace OWO_ULTRAKILL
         private float ultraAngle = 0f;
         private int ultraIntensity = 0;
         public bool isRightHanded; 
+        public bool dualWeapon;
 
 
         public Dictionary<String, Sensation> FeedbackMap = new Dictionary<String, Sensation>();
@@ -152,9 +154,17 @@ namespace OWO_ULTRAKILL
         public void FeelWithHand(String key, bool isRightHand = true, int Priority = 0, int intensity = 100)
         {
             Sensation toSend = GetBackedId(key);
-            if (toSend == null) return;            
+            if (toSend == null) return;
 
-            toSend = toSend.WithMuscles(isRightHand ? rightRecoilMuscles.WithIntensity(intensity) : leftRecoilMuscles.WithIntensity(intensity));
+            if (key != "Punch" && dualWeapon)
+            {
+                Muscle[] dualMuscles = rightRecoilMuscles.Concat(leftRecoilMuscles).ToArray();
+                toSend = toSend.WithMuscles(dualMuscles.WithIntensity(intensity));
+            }
+            else
+            {
+                toSend = toSend.WithMuscles(isRightHand ? rightRecoilMuscles.WithIntensity(intensity) : leftRecoilMuscles.WithIntensity(intensity));
+            }
 
             OWO.Send(toSend.WithPriority(Priority));
         }
@@ -288,12 +298,12 @@ namespace OWO_ULTRAKILL
 
         public void GunRecoil(String recoilSensation)
         {
-            FeelWithHand(recoilSensation, isRightHanded);
+            FeelWithHand(recoilSensation, isRightHanded, 2);
         }
 
         public void PunchRecoil()
         {
-            FeelWithHand("Punch", !isRightHanded);
+            FeelWithHand("Punch", !isRightHanded, 2);
         }
 
         #endregion
