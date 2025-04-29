@@ -195,7 +195,11 @@ namespace OWO_ULTRAKILL
             [HarmonyPrefix]
             public static void Prefix(Vector3 point, Transform target)
             {
-                owoSkin.LOG($"Punch PunchSuccess - {point} - {target}");
+                if(!owoSkin.CanFeel()) return;
+
+                owoSkin.FeelWithHand("Punch", !owoSkin.isRightHanded);
+
+                //owoSkin.LOG($"Punch PunchSuccess - {point} - {target}");
             }
         }
 
@@ -205,7 +209,11 @@ namespace OWO_ULTRAKILL
             [HarmonyPrefix]
             public static void Prefix()
             {
-                owoSkin.LOG($"Punch Parry");
+                if (!owoSkin.CanFeel()) return;
+
+                owoSkin.FeelWithHand("Punch", !owoSkin.isRightHanded);
+                
+                //owoSkin.LOG($"Punch Parry");
             }
         }
 
@@ -634,7 +642,7 @@ namespace OWO_ULTRAKILL
             public static void Postfix(Revolver __instance, int shotType)
             {
                 if (!owoSkin.CanFeel()) return;
-                owoSkin.FeelWithHand("Revolver");
+                owoSkin.FeelWithHand("Revolver", owoSkin.isRightHanded);
 
                 owoSkin.LOG($"Revolver Shoot - Variation: {__instance.gunVariation} Typo - {shotType} ");
             }
