@@ -19,6 +19,7 @@ namespace OWO_ULTRAKILL
         public static OWOSkin owoSkin;
         public static bool startDodging;
         public static ConfigEntry<bool> movementEffects;
+        public static ConfigEntry<bool> reverseDash;
         ConfigFile customFile = new ConfigFile(Path.Combine(Paths.ConfigPath, "owo_ultrakill.cfg"), true);
 
         public Dictionary<string, object> prefMap;
@@ -68,7 +69,9 @@ namespace OWO_ULTRAKILL
             [HarmonyPostfix]
             public static void Postfix(NewMovement __instance)
             {
-                owoSkin.LOG($"NewMovement StartSlide");
+                if (!owoSkin.CanFeel() || movementEffects.Value) return;
+
+                owoSkin.StartUltraSpeed();
             }
         }
 
@@ -78,7 +81,9 @@ namespace OWO_ULTRAKILL
             [HarmonyPostfix]
             public static void Postfix(NewMovement __instance)
             {
-                owoSkin.LOG($"NewMovement StopSlide");
+                if (!owoSkin.CanFeel() || movementEffects.Value) return;
+
+                owoSkin.StopUltraSpeed();
             }
         }
 
@@ -117,9 +122,7 @@ namespace OWO_ULTRAKILL
             public static void Postfix(NewMovement __instance)
             {
                 owoSkin.isPlayerActive = __instance.activated;
-
-                if (!movementEffects.Value || !owoSkin.CanFeel()) return;
-                owoSkin.StartUltraSpeed();
+                if(!owoSkin.CanFeel()) return;                
 
                 float boostLeft = Traverse.Create(__instance).Field("boostLeft").GetValue<float>();
 
@@ -141,6 +144,9 @@ namespace OWO_ULTRAKILL
                 {
                     startDodging = true;
                 }
+
+                if (!movementEffects.Value) return;
+                owoSkin.StartUltraSpeed();
             }
         }
 
@@ -150,30 +156,13 @@ namespace OWO_ULTRAKILL
             [HarmonyPostfix]
             public static void Postfix(NewMovement __instance)
             {
-                if (__instance.modNoDashSlide) return;
+                if (__instance.modNoDashSlide || movementEffects.Value) return;
 
                 if (!startDodging) return;
 
-                startDodging = false;
+                startDodging = false;                
 
-                Vector3 movementDirection2 = Traverse.Create(__instance).Field("movementDirection2").GetValue<Vector3>();
-
-                if (__instance.dodgeDirection == __instance.transform.forward)
-                {
-                    owoSkin.LOG($"NewMovement Dodge Forward - Movement Direction: {movementDirection2} - Dodge Direction: {__instance.dodgeDirection} ");
-                }
-                else if (__instance.dodgeDirection == __instance.transform.forward * -1f)
-                {
-                    owoSkin.LOG($"NewMovement Dodge Backward");
-                }
-                else if (__instance.dodgeDirection == __instance.transform.right)
-                {
-                    owoSkin.LOG($"NewMovement Dodge Right");
-                }
-                else
-                {
-                    owoSkin.LOG($"NewMovement Dodge Left");
-                }
+                owoSkin.FeelSpeed();
             }
         }
 
@@ -888,7 +877,6 @@ namespace OWO_ULTRAKILL
         }
 
         #endregion
-
 
         #endregion
 

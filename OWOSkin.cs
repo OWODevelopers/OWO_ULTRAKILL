@@ -20,6 +20,7 @@ namespace OWO_ULTRAKILL
         private int ultraIntensity = 0;
         public bool isRightHanded; 
         public bool dualWeapon;
+        public bool reverseDash;
 
 
         public Dictionary<String, Sensation> FeedbackMap = new Dictionary<String, Sensation>();
@@ -170,7 +171,7 @@ namespace OWO_ULTRAKILL
             OWO.Send(toSend.WithPriority(Priority));
         }
 
-        private void FeelSpeed()
+        public void FeelSpeed()
         {
             if (ultraIntensity < 10) return;
 
@@ -207,13 +208,13 @@ namespace OWO_ULTRAKILL
             switch (angle)
             {
                 case float a when (a > 135 && a <= 225):
-                    return Muscle.Front;
+                    return reverseDash ? Muscle.Back : Muscle.Front; //Default Front
                 case float a when (a > 45 && a <= 135):
-                    return rightSpeedMuscles;
+                    return reverseDash ? leftSpeedMuscles : rightSpeedMuscles; //Default Right
                 case float a when ((a >= 0 && a <= 45) || (a > 315 && a <= 360)):
-                    return Muscle.Back;
+                    return reverseDash ? Muscle.Front : Muscle.Back; //Default Back
                 case float a when (a > 225 && a <= 315):
-                    return leftSpeedMuscles;
+                    return reverseDash ? rightSpeedMuscles : leftSpeedMuscles; //Default Left
                 default:
                     return Muscle.Back;
             }
@@ -262,7 +263,7 @@ namespace OWO_ULTRAKILL
         public void UpdateUltraSpeed(float angle, int intensity)
         {
             ultraAngle = angle;
-            ultraIntensity = intensity;
+            ultraIntensity = Mathf.Clamp(intensity, 40, 100);
         }
 
         #endregion
