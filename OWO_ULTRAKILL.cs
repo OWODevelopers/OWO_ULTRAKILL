@@ -883,7 +883,7 @@ namespace OWO_ULTRAKILL
             {
                 if (!owoSkin.CanFeel()) return;
                 if(!canHook || __instance.state != HookState.Throwing || !MonoSingleton<InputManager>.Instance.InputSource.Hook.WasPerformedThisFrame) return;
-                owoSkin.Feel("Punch");
+                owoSkin.PunchRecoil();
             }
         }
 
