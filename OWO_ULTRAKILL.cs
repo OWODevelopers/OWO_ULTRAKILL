@@ -3,16 +3,8 @@ using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
 using SettingsMenu.Components;
-using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
-using static System.Net.Mime.MediaTypeNames;
-using Newtonsoft.Json;
 
 namespace OWO_ULTRAKILL
 {

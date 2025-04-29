@@ -175,16 +175,17 @@ namespace OWO_ULTRAKILL
 
         public void FeelDamage(Vector3 hitForward)
         {
-            Sensation toSend = GetBackedId("Impact");
+            Sensation toSend = GetBackedId("Hurt");
+            if (toSend == null) return;
 
             Transform player = MonoSingleton<NewMovement>.Instance.transform;
 
             float angleHit = Vector3.SignedAngle(-hitForward.normalized, player.forward, Vector3.up) + 180;
-
+            
             Muscle[] musclesList = GetMuscleAngle(angleHit);
             
 
-            toSend = toSend.WithMuscles(musclesList);
+            toSend = toSend.WithMuscles(musclesList.WithIntensity(100));
 
             OWO.Send(toSend.WithPriority(3));
         }
