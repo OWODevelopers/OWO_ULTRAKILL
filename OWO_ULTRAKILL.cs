@@ -859,14 +859,11 @@ namespace OWO_ULTRAKILL
         {
             [HarmonyPostfix]
             public static void Postfix(NewMovement __instance)
-            {     
-                if (!owoSkin.suitEnabled) return;
-                owoSkin.Feel("Loading Up", 2);
+            {
+                owoSkin.LOG("## RESPAWN");
 
-                if (movementEffects.Value)
-                {
-                    owoSkin.StartUltraSpeed();
-                }
+                if (!owoSkin.suitEnabled) return;
+                owoSkin.Feel("Loading Up", 2);            
             }
         }
         
