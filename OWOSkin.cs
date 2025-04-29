@@ -19,8 +19,8 @@ namespace OWO_ULTRAKILL
 
 
         public Dictionary<String, Sensation> FeedbackMap = new Dictionary<String, Sensation>();
-        private readonly Muscle[] rightRecoilMuscles = {Muscle.Arm_R, Muscle.Pectoral_R, Muscle.Dorsal_R};
-        private readonly Muscle[] leftRecoilMuscles = {Muscle.Arm_L, Muscle.Pectoral_L, Muscle.Dorsal_L};
+        private readonly Muscle[] rightRecoilMuscles = {Muscle.Arm_R, Muscle.Pectoral_R.WithIntensity(80), Muscle.Dorsal_R.WithIntensity(50)};
+        private readonly Muscle[] leftRecoilMuscles = {Muscle.Arm_L, Muscle.Pectoral_L.WithIntensity(80), Muscle.Dorsal_L.WithIntensity(50)};
         private readonly Muscle[] rightSpeedMuscles = {Muscle.Arm_R, Muscle.Pectoral_R, Muscle.Abdominal_R, Muscle.Dorsal_R, Muscle.Lumbar_R};
         private readonly Muscle[] leftSpeedMuscles = {Muscle.Arm_L, Muscle.Pectoral_L, Muscle.Abdominal_L, Muscle.Dorsal_L, Muscle.Lumbar_L};        
 
@@ -148,12 +148,12 @@ namespace OWO_ULTRAKILL
             OWO.Send(toSend.WithPriority(Priority));          
         }
 
-        public void FeelWithHand(String key, int Priority = 0, int intensity = 100)
+        public void FeelWithHand(String key, bool isRightHand = true, int Priority = 0, int intensity = 100)
         {
             Sensation toSend = GetBackedId(key);
             if (toSend == null) return;            
 
-            toSend = toSend.WithMuscles(isRightHanded ? rightRecoilMuscles.WithIntensity(intensity) : leftRecoilMuscles.WithIntensity(intensity));
+            toSend = toSend.WithMuscles(isRightHand ? rightRecoilMuscles.WithIntensity(intensity) : leftRecoilMuscles.WithIntensity(intensity));
 
             OWO.Send(toSend.WithPriority(Priority));
         }
