@@ -15,6 +15,7 @@ namespace OWO_ULTRAKILL
         public bool isPlayerActive = false;
         private bool ultraSpeedIsEnable = false;
         private bool nailGunIsEnable = false;
+        private bool chargingIsEnable = false;
         private float ultraAngle = 0f;
         private int ultraIntensity = 0;
         public bool isRightHanded; 
@@ -287,6 +288,32 @@ namespace OWO_ULTRAKILL
                 GunRecoil("Nailgun");
                 await Task.Delay(200);
                 StopNailGun();
+            }
+        }
+
+        #endregion
+        
+        #region Charging
+        public void StartCharging()
+        {
+            if (chargingIsEnable) return;
+
+            chargingIsEnable = true;
+            ChargingFuncAsync();
+        }
+
+        public void StopCharging()
+        {
+            chargingIsEnable = false;
+        }
+
+        public async Task ChargingFuncAsync()
+        {
+            while (chargingIsEnable)
+            {
+                GunRecoil("Charging");
+                await Task.Delay(200);
+                StopCharging();
             }
         }
 

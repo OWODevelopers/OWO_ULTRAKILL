@@ -620,6 +620,19 @@ namespace OWO_ULTRAKILL
                 owoSkin.LOG($"Revolver Shoot - Variation: {__instance.gunVariation} Typo - {shotType} ");
             }
         }
+        
+        [HarmonyPatch(typeof(Revolver), "Update")]
+        public class OnHoladRevolverCharge
+        {
+            [HarmonyPostfix]
+            public static void Postfix(Revolver __instance)
+            {
+                if (!owoSkin.CanFeel()) return;
+                if (__instance.pierceShotCharge == 0) return;
+
+                owoSkin.StartCharging();
+            }
+        }
         #endregion
 
         #region Shotgun
@@ -660,6 +673,21 @@ namespace OWO_ULTRAKILL
                 owoSkin.GunRecoil("Shotgun");
 
                 owoSkin.LOG($"Shotgun Shoot SP - Variation: {__instance.variation} - PrimaryCharge: {__instance.primaryCharge}");
+            }
+        }
+
+        [HarmonyPatch(typeof(Shotgun), "Update")]
+        public class OnHoldShotgunCharge
+        {
+            [HarmonyPostfix]
+            public static void Postfix(Shotgun __instance)
+            {
+                if (!owoSkin.CanFeel()) return;
+                bool charging = Traverse.Create(__instance).Field("charging").GetValue<bool>();
+                if (!charging) return;
+
+                owoSkin.StartCharging();
+                
             }
         }
 
@@ -814,6 +842,24 @@ namespace OWO_ULTRAKILL
                 owoSkin.PunchRecoil();
 
                 //owoSkin.LOG($"Punch Parry");
+            }
+        }
+
+        #endregion
+
+        #region Hook
+
+        [HarmonyPatch(typeof(HookArm), "Update")]
+        public class OnHook
+        {
+            [HarmonyPostfix]
+            public static void Postfix(HookArm __instance)
+            {
+                if (!owoSkin.CanFeel()) return;
+                if(__instance.state != HookState.Throwing) return;
+                owoSkin.Feel("Hook");
+
+                //owoSkin.LOG($"Punch PunchSuccess - {point} - {target}");
             }
         }
 
