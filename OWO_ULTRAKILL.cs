@@ -852,14 +852,23 @@ namespace OWO_ULTRAKILL
         [HarmonyPatch(typeof(HookArm), "Update")]
         public class OnHook
         {
+            public static bool canHook;
+
+            [HarmonyPrefix]
+            public static void Prefix(HookArm __instance)
+            {
+                if (!owoSkin.CanFeel()) return;
+
+                if (__instance.state == HookState.Throwing) canHook = false;
+                else canHook = true;
+            }
+            
             [HarmonyPostfix]
             public static void Postfix(HookArm __instance)
             {
                 if (!owoSkin.CanFeel()) return;
-                if(__instance.state != HookState.Throwing) return;
-                owoSkin.Feel("Hook");
-
-                //owoSkin.LOG($"Punch PunchSuccess - {point} - {target}");
+                if(!canHook || __instance.state != HookState.Throwing || !MonoSingleton<InputManager>.Instance.InputSource.Hook.WasPerformedThisFrame) return;
+                owoSkin.Feel("Punch");
             }
         }
 
