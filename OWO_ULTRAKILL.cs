@@ -189,35 +189,7 @@ namespace OWO_ULTRAKILL
                 if (__instance.modNoDashSlide) return;
                 owoSkin.LOG($"NewMovement Launch");
             }
-        }
-        
-        [HarmonyPatch(typeof(Punch), "PunchSuccess")]
-        public class OnPunchSuccess
-        {
-            [HarmonyPrefix]
-            public static void Prefix(Vector3 point, Transform target)
-            {
-                if(!owoSkin.CanFeel()) return;
-
-                owoSkin.FeelWithHand("Punch", !owoSkin.isRightHanded);
-
-                //owoSkin.LOG($"Punch PunchSuccess - {point} - {target}");
-            }
-        }
-
-        [HarmonyPatch(typeof(Punch), "Parry")]
-        public class OnParry2
-        {
-            [HarmonyPrefix]
-            public static void Prefix()
-            {
-                if (!owoSkin.CanFeel()) return;
-
-                owoSkin.FeelWithHand("Punch", !owoSkin.isRightHanded);
-                
-                //owoSkin.LOG($"Punch Parry");
-            }
-        }
+        }       
 
         #endregion
 
@@ -634,7 +606,7 @@ namespace OWO_ULTRAKILL
 
         #endregion
         
-        #region Weapon
+        #region Attacks
 
         #region Revolver
         [HarmonyPatch(typeof(Revolver), "Shoot")]
@@ -644,7 +616,7 @@ namespace OWO_ULTRAKILL
             public static void Postfix(Revolver __instance, int shotType)
             {
                 if (!owoSkin.CanFeel()) return;
-                owoSkin.FeelWithHand("Revolver", owoSkin.isRightHanded);
+                owoSkin.GunRecoil("Revolver");
 
                 owoSkin.LOG($"Revolver Shoot - Variation: {__instance.gunVariation} Typo - {shotType} ");
             }
@@ -660,7 +632,7 @@ namespace OWO_ULTRAKILL
             public static void Postfix(Shotgun __instance)
             {
                 if (!owoSkin.CanFeel()) return;
-                owoSkin.FeelWithHand("Shotgun");
+                owoSkin.GunRecoil("Shotgun");
 
                 owoSkin.LOG($"Shotgun Shoot - Variation: {__instance.variation} - PrimaryCharge: {__instance.primaryCharge}");
             }
@@ -673,7 +645,7 @@ namespace OWO_ULTRAKILL
             public static void Postfix(Shotgun __instance)
             {
                 if (!owoSkin.CanFeel()) return;
-                owoSkin.FeelWithHand("Shotgun");
+                owoSkin.GunRecoil("Shotgun");
 
                 owoSkin.LOG($"Shotgun Shoot SP - Variation: {__instance.variation} - PrimaryCharge: {__instance.primaryCharge}");
             }
@@ -686,7 +658,7 @@ namespace OWO_ULTRAKILL
             public static void Postfix(Shotgun __instance)
             {
                 if (!owoSkin.CanFeel()) return;
-                owoSkin.FeelWithHand("Shotgun");
+                owoSkin.GunRecoil("Shotgun");
 
                 owoSkin.LOG($"Shotgun Shoot SP - Variation: {__instance.variation} - PrimaryCharge: {__instance.primaryCharge}");
             }
@@ -702,7 +674,7 @@ namespace OWO_ULTRAKILL
             public static void Postfix(Nailgun __instance)
             {
                 if (!owoSkin.CanFeel()) return;
-                owoSkin.FeelWithHand("Nailgun");
+                owoSkin.GunRecoil("Nailgun");
 
                 owoSkin.LOG($"Nailgun Shoot - {__instance.variation}");
             }
@@ -715,7 +687,7 @@ namespace OWO_ULTRAKILL
             public static void Postfix(Nailgun __instance)
             {
                 if (!owoSkin.CanFeel()) return;
-                owoSkin.FeelWithHand("Nailgun");
+                owoSkin.GunRecoil("Nailgun");
 
                 owoSkin.LOG($"Nailgun ShootZapper - {__instance.variation}");
             }
@@ -728,7 +700,7 @@ namespace OWO_ULTRAKILL
             public static void Postfix(Nailgun __instance)
             {
                 if (!owoSkin.CanFeel()) return;
-                owoSkin.FeelWithHand("Nailgun");
+                owoSkin.GunRecoil("Nailgun");
 
                 owoSkin.LOG($"Nailgun SuperSaw - {__instance.variation}");
             }
@@ -769,9 +741,9 @@ namespace OWO_ULTRAKILL
             public static void Postfix(Railcannon __instance)
             {
                 if (!owoSkin.CanFeel()) return;
-                owoSkin.FeelWithHand("Rail Cannon");
+                owoSkin.GunRecoil("Rail Cannon");
 
-                owoSkin.LOG($"Railcannon Shoot  - {__instance.variation}");
+                //owoSkin.LOG($"Railcannon Shoot  - {__instance.variation}");
             }
         }
         #endregion
@@ -784,7 +756,8 @@ namespace OWO_ULTRAKILL
             public static void Postfix(RocketLauncher __instance)
             {
                 if (!owoSkin.CanFeel()) return;
-                owoSkin.FeelWithHand("Rcoket Launcher");
+                owoSkin.GunRecoil("Rocket Launcher");
+
 
                 owoSkin.LOG($"RocketLauncher Shoot - {__instance.variation}");
             }
@@ -797,9 +770,9 @@ namespace OWO_ULTRAKILL
             public static void Postfix(RocketLauncher __instance)
             {
                 if (!owoSkin.CanFeel()) return;
-                owoSkin.FeelWithHand("Cannon Ball");
+                owoSkin.GunRecoil("Cannon Ball");
 
-                owoSkin.LOG($"RocketLauncher ShootCannonball - {__instance.variation}");
+                //owoSkin.LOG($"RocketLauncher ShootCannonball - {__instance.variation}");
             }
         }
         
@@ -810,15 +783,47 @@ namespace OWO_ULTRAKILL
             public static void Postfix(RocketLauncher __instance)
             {
                 if (!owoSkin.CanFeel()) return;
-                owoSkin.FeelWithHand("Nailgun");
+                owoSkin.GunRecoil("Nailgun");
 
-                owoSkin.LOG($"RocketLauncher ShootNapalm - {__instance.variation}");
+                //owoSkin.LOG($"RocketLauncher ShootNapalm - {__instance.variation}");
             }
         }
         #endregion
 
+        #region Punch
+
+        [HarmonyPatch(typeof(Punch), "PunchSuccess")]
+        public class OnPunchSuccess
+        {
+            [HarmonyPrefix]
+            public static void Prefix(Vector3 point, Transform target)
+            {
+                if (!owoSkin.CanFeel()) return;
+                owoSkin.PunchRecoil();
+
+                //owoSkin.LOG($"Punch PunchSuccess - {point} - {target}");
+            }
+        }
+
+        [HarmonyPatch(typeof(Punch), "Parry")]
+        public class OnParry2
+        {
+            [HarmonyPrefix]
+            public static void Prefix()
+            {
+                if (!owoSkin.CanFeel()) return;
+                owoSkin.PunchRecoil();
+
+                //owoSkin.LOG($"Punch Parry");
+            }
+        }
 
         #endregion
+
+
+        #endregion
+
+        #region PowerUps
 
         [HarmonyPatch(typeof(DualWieldPickup), "PickedUp")]
         public class OnPickedUp
@@ -854,14 +859,16 @@ namespace OWO_ULTRAKILL
             }
         }
 
+        #endregion
+
+        #region Respawn & Pause
+
         [HarmonyPatch(typeof(NewMovement), "Respawn")]
         public class OnRespawn
         {
             [HarmonyPostfix]
             public static void Postfix(NewMovement __instance)
             {
-                owoSkin.LOG("## RESPAWN");
-
                 if (!owoSkin.suitEnabled) return;
                 owoSkin.Feel("Loading Up", 2);            
             }
@@ -876,7 +883,11 @@ namespace OWO_ULTRAKILL
                 owoSkin.isPlayerActive = false;
                 owoSkin.StopAllHapticFeedback();
             }
-        } 
+        }
+
+        #endregion
+
+        #region GetRightHand
 
         [HarmonyPatch(typeof(SettingsMenu.Components.SettingsMenu), "OnPrefChanged")]
         public class OnPrefChanged
@@ -884,21 +895,9 @@ namespace OWO_ULTRAKILL
             [HarmonyPostfix]
             public static void Postfix(SettingsMenu.Components.SettingsMenu __instance, string key, object value)
             {
-                //owoSkin.LOG($"## ON SETTINGS CHANGED: KEY: {key} - VALUE: {value}");
-
-                SettingsLogicBase[] array = Traverse.Create(__instance).Field("settingsLogic").GetValue<SettingsLogicBase[]>();
-
-                //for (int i = 0; i < array.Length; i++)
-                //{
-                //    //array[i].OnPrefChanged(key, value);
-                //    owoSkin.LOG($"## {array[i].name}");
-
-                //}
-
                 if (key == "weaponHoldPosition")
                     if ((int)value == 2) owoSkin.isRightHanded = false; //left
                     else owoSkin.isRightHanded = true; //right
-
             }
         }
 
@@ -910,14 +909,12 @@ namespace OWO_ULTRAKILL
             {
                 __instance.prefMap.TryGetValue("weaponHoldPosition", out var value);
 
-                owoSkin.LOG($" #### ## CURRENT HAND{value}");
-
                 if ((long)value == 2) owoSkin.isRightHanded = false; //left
                 else owoSkin.isRightHanded = true; //right
-                
-                //owoSkin.LOG($" #### ## CURRENT HAND{owoSkin.curentHand}");
             }
         }
+
+        #endregion
 
     }
 }

@@ -257,6 +257,20 @@ namespace OWO_ULTRAKILL
 
         #endregion
 
+        #region guns 
+
+        public void GunRecoil(String recoilSensation)
+        {
+            FeelWithHand(recoilSensation, isRightHanded);
+        }
+
+        public void PunchRecoil()
+        {
+            FeelWithHand("Punch", !isRightHanded);
+        }
+
+        #endregion
+
         public void StopAllHapticFeedback()
         {
             StopUltraSpeed();
