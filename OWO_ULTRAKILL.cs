@@ -4,6 +4,7 @@ using BepInEx.Logging;
 using HarmonyLib;
 using SettingsMenu.Components;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 namespace OWO_ULTRAKILL
@@ -18,6 +19,7 @@ namespace OWO_ULTRAKILL
         public static OWOSkin owoSkin;
         public static bool startDodging;
         public static ConfigEntry<bool> movementEffects;
+        ConfigFile customFile = new ConfigFile(Path.Combine(Paths.ConfigPath, "owo_ultrakill.cfg"), true);
 
         public Dictionary<string, object> prefMap;
 
@@ -28,7 +30,7 @@ namespace OWO_ULTRAKILL
             Logger.LogMessage("OWO_ULTRAKILL plugin is loaded!");
 
             owoSkin = new OWOSkin();
-            movementEffects = Config.Bind("General", "movementEffects", true);
+            movementEffects = customFile.Bind("General", "movementEffects", true);
 
             var harmony = new Harmony("owo.patch.ultrakill");
             harmony.PatchAll();
