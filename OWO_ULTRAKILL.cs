@@ -832,7 +832,7 @@ namespace OWO_ULTRAKILL
             {
                 if (!owoSkin.CanFeel()) return;
 
-                owoSkin.Feel("Power Up");
+                owoSkin.Feel("Power Up", 1);
                 owoSkin.dualWeapon = true;
             }
         }
@@ -857,7 +857,7 @@ namespace OWO_ULTRAKILL
             public static void Postfix(NewMovement __instance)
             {
                 if (!owoSkin.CanFeel()) return;
-                owoSkin.LOG("Repair");
+                owoSkin.Feel("Repair", 1);
             }
         }
 
