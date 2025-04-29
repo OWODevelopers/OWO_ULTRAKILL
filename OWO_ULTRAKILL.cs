@@ -119,7 +119,7 @@ namespace OWO_ULTRAKILL
             {
                 owoSkin.isPlayerActive = __instance.activated;
 
-                if (!movementEffects.Value || !owoSkin.isPlayerActive) return;                       
+                if (!movementEffects.Value || !owoSkin.CanFeel()) return;                       
                 owoSkin.StartUltraSpeed();
 
                 float boostLeft = Traverse.Create(__instance).Field("boostLeft").GetValue<float>();
