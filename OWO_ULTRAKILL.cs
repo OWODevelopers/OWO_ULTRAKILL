@@ -117,7 +117,7 @@ namespace OWO_ULTRAKILL
             {
                 owoSkin.isPlayerActive = __instance.activated;
 
-                if (!movementEffects.Value) return;                       
+                if (!movementEffects.Value || !owoSkin.isPlayerActive) return;                       
                 owoSkin.StartUltraSpeed();
 
                 float boostLeft = Traverse.Create(__instance).Field("boostLeft").GetValue<float>();
@@ -849,8 +849,9 @@ namespace OWO_ULTRAKILL
         {
             [HarmonyPostfix]
             public static void Postfix(NewMovement __instance)
-            {               
-                owoSkin.Feel("Loading Up");
+            {     
+                if (!owoSkin.suitEnabled) return;
+                owoSkin.Feel("Loading Up", 2);
 
                 if (movementEffects.Value)
                 {
