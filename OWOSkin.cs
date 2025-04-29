@@ -15,7 +15,7 @@ namespace OWO_ULTRAKILL
         private bool ultraSpeedIsEnable = false;
         private float ultraAngle = 0f;
         private int ultraIntensity = 0;
-        public string curentHand; 
+        public bool isRightHanded; 
 
 
         public Dictionary<String, Sensation> FeedbackMap = new Dictionary<String, Sensation>();
@@ -148,12 +148,12 @@ namespace OWO_ULTRAKILL
             OWO.Send(toSend.WithPriority(Priority));          
         }
 
-        public void FeelWithHand(String key, bool isRightHand = true, int Priority = 0, int intensity = 100)
+        public void FeelWithHand(String key, int Priority = 0, int intensity = 100)
         {
             Sensation toSend = GetBackedId(key);
-            if (toSend == null) return;
+            if (toSend == null) return;            
 
-            toSend = toSend.WithMuscles(isRightHand ? rightRecoilMuscles.WithIntensity(intensity) : leftRecoilMuscles.WithIntensity(intensity));
+            toSend = toSend.WithMuscles(isRightHanded ? rightRecoilMuscles.WithIntensity(intensity) : leftRecoilMuscles.WithIntensity(intensity));
 
             OWO.Send(toSend.WithPriority(Priority));
         }

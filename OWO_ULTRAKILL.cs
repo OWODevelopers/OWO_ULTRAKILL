@@ -633,6 +633,8 @@ namespace OWO_ULTRAKILL
             [HarmonyPostfix]
             public static void Postfix(Revolver __instance, int shotType)
             {
+                if (!owoSkin.CanFeel()) return;
+                owoSkin.FeelWithHand("Revolver");
 
                 owoSkin.LOG($"Revolver Shoot - Variation: {__instance.gunVariation} Typo - {shotType} ");
             }
@@ -647,7 +649,9 @@ namespace OWO_ULTRAKILL
             [HarmonyPostfix]
             public static void Postfix(Shotgun __instance)
             {
-                
+                if (!owoSkin.CanFeel()) return;
+                owoSkin.FeelWithHand("Shotgun");
+
                 owoSkin.LOG($"Shotgun Shoot - Variation: {__instance.variation} - PrimaryCharge: {__instance.primaryCharge}");
             }
         }
@@ -658,6 +662,9 @@ namespace OWO_ULTRAKILL
             [HarmonyPostfix]
             public static void Postfix(Shotgun __instance)
             {
+                if (!owoSkin.CanFeel()) return;
+                owoSkin.FeelWithHand("Shotgun");
+
                 owoSkin.LOG($"Shotgun Shoot SP - Variation: {__instance.variation} - PrimaryCharge: {__instance.primaryCharge}");
             }
         }
@@ -668,8 +675,10 @@ namespace OWO_ULTRAKILL
             [HarmonyPostfix]
             public static void Postfix(Shotgun __instance)
             {
-                owoSkin.LOG($"Shotgun Shoot SP - Variation: {__instance.variation} - PrimaryCharge: {__instance.primaryCharge}");
+                if (!owoSkin.CanFeel()) return;
+                owoSkin.FeelWithHand("Shotgun");
 
+                owoSkin.LOG($"Shotgun Shoot SP - Variation: {__instance.variation} - PrimaryCharge: {__instance.primaryCharge}");
             }
         }
 
@@ -682,6 +691,8 @@ namespace OWO_ULTRAKILL
             [HarmonyPostfix]
             public static void Postfix(Nailgun __instance)
             {
+                if (!owoSkin.CanFeel()) return;
+                owoSkin.FeelWithHand("Nailgun");
 
                 owoSkin.LOG($"Nailgun Shoot - {__instance.variation}");
             }
@@ -693,6 +704,9 @@ namespace OWO_ULTRAKILL
             [HarmonyPostfix]
             public static void Postfix(Nailgun __instance)
             {
+                if (!owoSkin.CanFeel()) return;
+                owoSkin.FeelWithHand("Nailgun");
+
                 owoSkin.LOG($"Nailgun ShootZapper - {__instance.variation}");
             }
         }
@@ -703,6 +717,9 @@ namespace OWO_ULTRAKILL
             [HarmonyPostfix]
             public static void Postfix(Nailgun __instance)
             {
+                if (!owoSkin.CanFeel()) return;
+                owoSkin.FeelWithHand("Nailgun");
+
                 owoSkin.LOG($"Nailgun SuperSaw - {__instance.variation}");
             }
         }
@@ -713,6 +730,9 @@ namespace OWO_ULTRAKILL
             [HarmonyPostfix]
             public static void Postfix(Nailgun __instance)
             {
+                if (!owoSkin.CanFeel()) return;
+                owoSkin.FeelWithHand("Nailgun"); 
+
                 owoSkin.LOG($"Nailgun BurstFire - {__instance.variation}");
             }
         }
@@ -723,6 +743,9 @@ namespace OWO_ULTRAKILL
             [HarmonyPostfix]
             public static void Postfix(Nailgun __instance)
             {
+                if (!owoSkin.CanFeel()) return;
+                owoSkin.FeelWithHand("Nailgun");
+
                 owoSkin.LOG($"Nailgun ShootMagnet - {__instance.variation}");
             }
         }
@@ -735,6 +758,8 @@ namespace OWO_ULTRAKILL
             [HarmonyPostfix]
             public static void Postfix(Railcannon __instance)
             {
+                if (!owoSkin.CanFeel()) return;
+                owoSkin.FeelWithHand("Rail Cannon");
 
                 owoSkin.LOG($"Railcannon Shoot  - {__instance.variation}");
             }
@@ -748,6 +773,8 @@ namespace OWO_ULTRAKILL
             [HarmonyPostfix]
             public static void Postfix(RocketLauncher __instance)
             {
+                if (!owoSkin.CanFeel()) return;
+                owoSkin.FeelWithHand("Rcoket Launcher");
 
                 owoSkin.LOG($"RocketLauncher Shoot - {__instance.variation}");
             }
@@ -759,6 +786,8 @@ namespace OWO_ULTRAKILL
             [HarmonyPostfix]
             public static void Postfix(RocketLauncher __instance)
             {
+                if (!owoSkin.CanFeel()) return;
+                owoSkin.FeelWithHand("Cannon Ball");
 
                 owoSkin.LOG($"RocketLauncher ShootCannonball - {__instance.variation}");
             }
@@ -770,6 +799,8 @@ namespace OWO_ULTRAKILL
             [HarmonyPostfix]
             public static void Postfix(RocketLauncher __instance)
             {
+                if (!owoSkin.CanFeel()) return;
+                owoSkin.FeelWithHand("Nailgun");
 
                 owoSkin.LOG($"RocketLauncher ShootNapalm - {__instance.variation}");
             }
@@ -845,20 +876,20 @@ namespace OWO_ULTRAKILL
             [HarmonyPostfix]
             public static void Postfix(SettingsMenu.Components.SettingsMenu __instance, string key, object value)
             {
-                owoSkin.LOG($"## ON SETTINGS CHANGED: KEY: {key} - VALUE: {value}");
+                //owoSkin.LOG($"## ON SETTINGS CHANGED: KEY: {key} - VALUE: {value}");
 
                 SettingsLogicBase[] array = Traverse.Create(__instance).Field("settingsLogic").GetValue<SettingsLogicBase[]>();
 
-                for (int i = 0; i < array.Length; i++)
-                {
-                    //array[i].OnPrefChanged(key, value);
-                    owoSkin.LOG($"## {array[i].name}");
+                //for (int i = 0; i < array.Length; i++)
+                //{
+                //    //array[i].OnPrefChanged(key, value);
+                //    owoSkin.LOG($"## {array[i].name}");
 
-                }
+                //}
 
                 if (key == "weaponHoldPosition")
-                    if ((int)value == 2) owoSkin.curentHand = "Left";
-                    else owoSkin.curentHand = "Right";
+                    if ((int)value == 2) owoSkin.isRightHanded = false; //left
+                    else owoSkin.isRightHanded = true; //right
 
             }
         }
@@ -869,15 +900,14 @@ namespace OWO_ULTRAKILL
             [HarmonyPostfix]
             public static void Postfix(PrefsManager __instance)
             {
-
                 __instance.prefMap.TryGetValue("weaponHoldPosition", out var value);
 
                 owoSkin.LOG($" #### ## CURRENT HAND{value}");
 
-                if ((long)value == 2) owoSkin.curentHand = "Left";
-                else owoSkin.curentHand = "Right";
-                owoSkin.LOG($" #### ## CURRENT HAND{owoSkin.curentHand}");
-
+                if ((long)value == 2) owoSkin.isRightHanded = false; //left
+                else owoSkin.isRightHanded = true; //right
+                
+                //owoSkin.LOG($" #### ## CURRENT HAND{owoSkin.curentHand}");
             }
         }
 
