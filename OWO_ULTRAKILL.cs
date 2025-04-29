@@ -34,7 +34,6 @@ namespace OWO_ULTRAKILL
 
             var harmony = new Harmony("owo.patch.ultrakill");
             harmony.PatchAll();
-
             
         }
 
@@ -674,9 +673,9 @@ namespace OWO_ULTRAKILL
             public static void Postfix(Nailgun __instance)
             {
                 if (!owoSkin.CanFeel()) return;
-                owoSkin.GunRecoil("Nailgun");
+                owoSkin.StartNailGun();
 
-                owoSkin.LOG($"Nailgun Shoot - {__instance.variation}");
+                //owoSkin.LOG($"Nailgun Shoot - {__instance.variation}");
             }
         }
         
@@ -687,9 +686,9 @@ namespace OWO_ULTRAKILL
             public static void Postfix(Nailgun __instance)
             {
                 if (!owoSkin.CanFeel()) return;
-                owoSkin.GunRecoil("Nailgun");
+                owoSkin.StartNailGun();
 
-                owoSkin.LOG($"Nailgun ShootZapper - {__instance.variation}");
+                //owoSkin.LOG($"Nailgun ShootZapper - {__instance.variation}");
             }
         }
 
@@ -700,9 +699,9 @@ namespace OWO_ULTRAKILL
             public static void Postfix(Nailgun __instance)
             {
                 if (!owoSkin.CanFeel()) return;
-                owoSkin.GunRecoil("Nailgun");
+                owoSkin.StartNailGun();
 
-                owoSkin.LOG($"Nailgun SuperSaw - {__instance.variation}");
+                //owoSkin.LOG($"Nailgun SuperSaw - {__instance.variation}");
             }
         }
 
@@ -713,9 +712,9 @@ namespace OWO_ULTRAKILL
             public static void Postfix(Nailgun __instance)
             {
                 if (!owoSkin.CanFeel()) return;
-                owoSkin.FeelWithHand("Nailgun"); 
+                owoSkin.StartNailGun();
 
-                owoSkin.LOG($"Nailgun BurstFire - {__instance.variation}");
+                //owoSkin.LOG($"Nailgun BurstFire - {__instance.variation}");
             }
         }
 
@@ -726,9 +725,9 @@ namespace OWO_ULTRAKILL
             public static void Postfix(Nailgun __instance)
             {
                 if (!owoSkin.CanFeel()) return;
-                owoSkin.FeelWithHand("Nailgun");
+                owoSkin.GunRecoil("Revolver");
 
-                owoSkin.LOG($"Nailgun ShootMagnet - {__instance.variation}");
+                //owoSkin.LOG($"Nailgun ShootMagnet - {__instance.variation}");
             }
         }
         #endregion
