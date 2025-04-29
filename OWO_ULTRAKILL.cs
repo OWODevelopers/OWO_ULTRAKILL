@@ -12,9 +12,9 @@ namespace OWO_ULTRAKILL
     [BepInPlugin("org.bepinex.plugins.OWO_ULTRAKILL", "OWO_ULTRAKILL", "1.0.0")]
     public class Plugin : BaseUnityPlugin
     {
-#pragma warning disable CS0109
+        #pragma warning disable CS0109
         internal static new ManualLogSource Log;
-#pragma warning restore CS0109
+        #pragma warning restore CS0109
 
         public static OWOSkin owoSkin;
         public static bool startDodging;
@@ -829,6 +829,19 @@ namespace OWO_ULTRAKILL
                 owoSkin.PunchRecoil();
 
                 //owoSkin.LOG($"Punch PunchSuccess - {point} - {target}");
+            }
+        }
+
+        [HarmonyPatch(typeof(Punch), "BlastCheck")]
+        public class BlastCheck
+        {
+            [HarmonyPrefix]
+            public static void Prefix(Punch __instance)
+            {
+                if (!owoSkin.CanFeel()) return;
+
+                if (__instance.heldAction.IsPressed())
+                    owoSkin.FeelWithHand("Shotgun", !owoSkin.isRightHanded, 2);                
             }
         }
 
