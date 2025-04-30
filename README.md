@@ -17,7 +17,9 @@ Want to get an OWO Suit? [Look here](https://owogame.com/shop/).
 # Configuration
 Modify these parameters inside "ULTRAKILL/BepInEx/config/owo_ultrakill.cfg" to:
 - "movementEffects" If you don't want to feel every movement in the game, set this to "false".
-- "reverseDash" Set to "false" if you want to feel fast movements and dashes from the direction you are moving, or "true" if you want to feel the opposite.
+- "reverseDash" Set to "false" if you want to feel fast movements and dashes from the direction you are moving, or "true" if you want to feel the opposite.  
+![image](https://github.com/user-attachments/assets/79ec519d-94ed-4517-8773-7a1e4e544a5b)
+
 
 # Featured effect
 - Loading Up
