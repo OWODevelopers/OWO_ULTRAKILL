@@ -69,7 +69,7 @@ namespace OWO_ULTRAKILL
         public class OnStartSlide
         {
             [HarmonyPostfix]
-            public static void Postfix(NewMovement __instance)
+            public static void Postfix()
             {
                 if (!owoSkin.CanFeel() || movementEffects.Value) return;
 
@@ -81,7 +81,7 @@ namespace OWO_ULTRAKILL
         public class OnStopSlide
         {
             [HarmonyPostfix]
-            public static void Postfix(NewMovement __instance)
+            public static void Postfix()
             {
                 if (!owoSkin.CanFeel() || movementEffects.Value) return;
 
@@ -109,7 +109,7 @@ namespace OWO_ULTRAKILL
         public class OnWallJump
         {
             [HarmonyPostfix]
-            public static void Postfix(NewMovement __instance)
+            public static void Postfix()
             {
                 if (!owoSkin.CanFeel()) return;
 
@@ -118,7 +118,7 @@ namespace OWO_ULTRAKILL
         }
 
         [HarmonyPatch(typeof(NewMovement), "Update")]
-        public class OnDodge
+        public class OnMovementUpdate
         {
             [HarmonyPostfix]
             public static void Postfix(NewMovement __instance)
@@ -127,8 +127,6 @@ namespace OWO_ULTRAKILL
                 if(!owoSkin.CanFeel()) return;                
 
                 float boostLeft = Traverse.Create(__instance).Field("boostLeft").GetValue<float>();
-
-                //owoSkin.LOG($"VELOCITY - VELOCITY NORMALIZED: {__instance.rb.velocity.normalized}--SPEED:{__instance.rb.velocity.magnitude} - PLAYER LOOK: {__instance.transform.forward} - ANGLE: {Vector3.SignedAngle(__instance.rb.velocity.normalized, __instance.transform.forward, Vector3.up)}");
 
                 Vector3 playerForward = __instance.transform.forward;
 
@@ -156,7 +154,7 @@ namespace OWO_ULTRAKILL
         }
 
         [HarmonyPatch(typeof(NewMovement), "Dodge")]
-        public class OnDodgea
+        public class OnDodge
         {
             [HarmonyPostfix]
             public static void Postfix(NewMovement __instance)
@@ -171,19 +169,6 @@ namespace OWO_ULTRAKILL
             }
         }
 
-        [HarmonyPatch(typeof(NewMovement), "Launch")]
-        public class OnLaunch
-        {
-            [HarmonyPostfix]
-            public static void Postfix(NewMovement __instance)
-            {
-                owoSkin.StopUltraSpeed();
-
-                if (__instance.modNoDashSlide) return;
-                owoSkin.LOG($"NewMovement Launch");
-            }
-        }
-
         #endregion
 
         #region Impacts
@@ -194,6 +179,7 @@ namespace OWO_ULTRAKILL
             [HarmonyPostfix]
             public static void Postfix(NewMovement __instance, int damage, bool invincible, float scoreLossMultiplier = 1f, bool explosion = false, bool instablack = false, float hardDamageMultiplier = 0.35f, bool ignoreInvincibility = false)
             {
+                if (!owoSkin.CanFeel()) return;
                 if (damage <= 0) return;
                 if (__instance.hp <= 0)
                 {
@@ -205,7 +191,6 @@ namespace OWO_ULTRAKILL
             }
         }
 
-        //unused?
         [HarmonyPatch(typeof(Wicked), "OnCollisionEnter")]
         public class OnWicked
         {
@@ -220,7 +205,6 @@ namespace OWO_ULTRAKILL
                 int damage = __state - MonoSingleton<NewMovement>.Instance.hp;
                 if (damage > 0)
                 {
-                    owoSkin.LOG($"Wicked OnCollisionEnter");
                     owoSkin.FeelDamage(__instance.transform.forward);
                 }
             }
@@ -240,13 +224,11 @@ namespace OWO_ULTRAKILL
                 int damage = __state - MonoSingleton<NewMovement>.Instance.hp;
                 if (damage > 0)
                 {
-                    owoSkin.LOG($"VirtueInsignia OnTriggerEnter - {__instance.transform.position}");
                     owoSkin.FeelDamage(__instance.transform.forward);
                 }
             }
         }
 
-        //unused?
         [HarmonyPatch(typeof(ThrownSword), "OnTriggerEnter")]
         public class OnThrownSword
         {
@@ -261,7 +243,6 @@ namespace OWO_ULTRAKILL
                 int damage = __state - MonoSingleton<NewMovement>.Instance.hp;
                 if (damage > 0)
                 {
-                    owoSkin.LOG($"ThrownSword OnTriggerEnter - {__instance.transform.position}");
                     owoSkin.FeelDamage(__instance.transform.forward);
                 }
             }
@@ -281,10 +262,7 @@ namespace OWO_ULTRAKILL
                 int damage = __state - MonoSingleton<NewMovement>.Instance.hp;
                 if (damage > 0)
                 {
-                    owoSkin.LOG($"SwingCheck2 CheckCollision - {__instance.transform.forward} --- {__instance.knockBackDirection}");
-
                     owoSkin.FeelDamage(__instance.transform.forward);
-
                 }
             }
         }
@@ -303,7 +281,6 @@ namespace OWO_ULTRAKILL
                 int damage = __state - MonoSingleton<NewMovement>.Instance.hp;
                 if (damage > 0)
                 {
-                    owoSkin.LOG($"RevolverBeam ExecuteHits - {currentHit.point}");
                     owoSkin.FeelDamage(__instance.transform.forward);
                 }
             }
@@ -323,7 +300,6 @@ namespace OWO_ULTRAKILL
                 int damage = __state - MonoSingleton<NewMovement>.Instance.hp;
                 if (damage > 0)
                 {
-                    //owoSkin.LOG($"PhysicalShockwave CheckCollision");
                     owoSkin.Feel("Damage", 3);
                 }
             }
@@ -343,14 +319,11 @@ namespace OWO_ULTRAKILL
                 int damage = __state - MonoSingleton<NewMovement>.Instance.hp;
                 if (damage > 0)
                 {
-                    owoSkin.LOG($"Nail OnCollisionEnter - {__instance.transform.position}");
                     owoSkin.FeelDamage(__instance.transform.forward);
-
                 }
             }
         }
 
-        //unused?
         [HarmonyPatch(typeof(MassSpear), "OnTriggerEnter")]
         public class OnMassSpear
         {
@@ -365,7 +338,6 @@ namespace OWO_ULTRAKILL
                 int damage = __state - MonoSingleton<NewMovement>.Instance.hp;
                 if (damage > 0)
                 {
-                    owoSkin.LOG($"MassSpear OnTriggerEnter - {__instance.transform.position}");
                     owoSkin.FeelDamage(__instance.transform.forward);
                 }
             }
@@ -385,32 +357,29 @@ namespace OWO_ULTRAKILL
                 int damage = __state - MonoSingleton<NewMovement>.Instance.hp;
                 if (damage > 0)
                 {
-                    //owoSkin.LOG($"HurtZone FixedUpdate - {__instance.transform.position}");
                     owoSkin.Feel("Damage", 3);
                 }
             }
         }
 
-        //[HarmonyPatch(typeof(DeathZone), "GotHit")]
-        //public class OnDeathZone
-        //{
-        //    [HarmonyPrefix]
-        //    public static void Prefix(out int __state)
-        //    {
-        //        __state = MonoSingleton<NewMovement>.Instance.hp;
-        //    }
-        //    [HarmonyPostfix]
-        //    public static void Postfix(int __state, DeathZone __instance)
-        //    {
-        //        int damage = __state - MonoSingleton<NewMovement>.Instance.hp;
-        //        if (damage > 0)
-        //        {
-        //            owoSkin.LOG($"DeathZone GotHit - {__instance.transform.position}");
-
-        //            owoSkin.Feel("Fall");
-        //        }
-        //    }
-        //}
+        [HarmonyPatch(typeof(DeathZone), "GotHit")]
+        public class OnDeathZone
+        {
+            [HarmonyPrefix]
+            public static void Prefix(out int __state)
+            {
+                __state = MonoSingleton<NewMovement>.Instance.hp;
+            }
+            [HarmonyPostfix]
+            public static void Postfix(int __state, DeathZone __instance)
+            {
+                int damage = __state - MonoSingleton<NewMovement>.Instance.hp;
+                if (damage > 0)
+                {
+                    owoSkin.Feel("Damage");
+                }
+            }
+        }
 
         [HarmonyPatch(typeof(Explosion), "Collide")]
         public class OnExplosion
@@ -425,18 +394,11 @@ namespace OWO_ULTRAKILL
             {
                 if (MonoSingleton<NewMovement>.Instance.hp < __state)
                 {
-                    //mmm linear scaling
-                    //float distance = Vector3.Distance(other.transform.position, __instance.transform.position);
-                    //float intensity = Mathf.Min(Mathf.Max(1 - (distance / 18), 0.1f), 0.75f);
-                    //owoSkin.Feel("ExplosionBelly", intensity);
-
-                    owoSkin.LOG($"Explosion Collide");
                     owoSkin.Feel("Explosion");
                 }
             }
         }
 
-        //unused?
         [HarmonyPatch(typeof(BeamgunBeam), "Update")]
         public class OnBeamgun
         {
@@ -451,7 +413,6 @@ namespace OWO_ULTRAKILL
                 int damage = __state - MonoSingleton<NewMovement>.Instance.hp;
                 if (damage > 0)
                 {
-                    owoSkin.LOG($"BeamgunBeam Beam Start");
                     LayerMask layerMask = LayerMaskDefaults.Get(LMD.EnemiesAndEnvironment);
                     float playerDamageCooldown = Traverse.Create(__instance).Field("playerDamageCooldown").GetValue<float>();
                     if (__instance.canHitPlayer && (double)playerDamageCooldown <= 0.0)
@@ -459,7 +420,6 @@ namespace OWO_ULTRAKILL
                     RaycastHit hitInfo;
                     if (Physics.Raycast(__instance.transform.position, __instance.transform.forward, out hitInfo, float.PositiveInfinity, (int)layerMask, QueryTriggerInteraction.Ignore))
                     {
-                        owoSkin.LOG($"BeamgunBeam Position - {hitInfo.point}");
                         owoSkin.FeelDamage(__instance.transform.forward);
                     }
                 }
@@ -480,38 +440,11 @@ namespace OWO_ULTRAKILL
                 int damage = __state - MonoSingleton<NewMovement>.Instance.hp;
                 if (damage > 0)
                 {
-                    owoSkin.LOG($"Projectile TimeToDie hit position - {__instance.transform.position}");
                     owoSkin.FeelDamage(__instance.transform.forward);
                 }
             }
         }
 
-        //unused?
-        //[HarmonyPatch(typeof(BlackHoleProjectile), "OnTriggerEnter")]
-        //public class OnBlackHoleProjectile
-        //{
-        //    [HarmonyPrefix]
-        //    public static void Prefix(out int __state)
-        //    {
-        //        __state = MonoSingleton<NewMovement>.Instance.hp;
-        //    }
-        //    [HarmonyPostfix]
-        //    public static void Postfix(int __state)
-        //    {
-        //        int damage = __state - MonoSingleton<NewMovement>.Instance.hp;
-        //        if (damage > 0)
-        //        {
-        //            if (MonoSingleton<NewMovement>.Instance.hp < __state)
-        //            {
-        //                owoSkin.LOG($"BlackHoleProjectile OnTriggerEnter");
-
-        //                owoSkin.Feel("Explosion");
-        //            }
-        //        }
-        //    }
-        //}
-
-        //unused?
         [HarmonyPatch(typeof(Coin), "ShootAtPlayer")]
         public class OnCoin
         {
@@ -526,13 +459,11 @@ namespace OWO_ULTRAKILL
                 int damage = __state - MonoSingleton<NewMovement>.Instance.hp;
                 if (damage > 0)
                 {
-                    owoSkin.LOG($"Coin Shoot at Player - {__instance.transform.position}");
                     owoSkin.FeelDamage(__instance.transform.forward);
                 }
             }
         }
 
-        //unused?
         [HarmonyPatch(typeof(ContinuousBeam), "Update")]
         public class OnContinuousBeam
         {
@@ -547,7 +478,6 @@ namespace OWO_ULTRAKILL
                 int damage = __state - MonoSingleton<NewMovement>.Instance.hp;
                 if (damage > 0)
                 {
-                    owoSkin.LOG($"Continuous Beam Start");
                     Vector3 zero = Vector3.zero;
                     RaycastHit hitInfo;
                     LayerMask environmentMask = Traverse.Create(__instance).Field("enviromentMask").GetValue<LayerMask>();
@@ -566,7 +496,6 @@ namespace OWO_ULTRAKILL
                         {
                             if (raycastHitArray[index].collider.gameObject.tag == "Player" && __instance.canHitPlayer && (double)playerCooldown <= 0.0)
                             {
-                                owoSkin.LOG($"Coninuous beam impact position - {raycastHitArray[index].point}");
                                 owoSkin.FeelDamage(raycastHitArray[index].point);
                             }
                         }
@@ -589,7 +518,6 @@ namespace OWO_ULTRAKILL
                 int damage = __state - MonoSingleton<NewMovement>.Instance.hp;
                 if (damage > 0)
                 {
-                    //owoSkin.LOG($"FireZone OnTriggerStay - {__instance.transform.position}");
                     owoSkin.Feel("Damage", 3);
                 }
 
@@ -605,12 +533,10 @@ namespace OWO_ULTRAKILL
         public class OnRevolverShoot
         {
             [HarmonyPostfix]
-            public static void Postfix(Revolver __instance, int shotType)
+            public static void Postfix()
             {
                 if (!owoSkin.CanFeel()) return;
                 owoSkin.GunRecoil("Revolver");
-
-                owoSkin.LOG($"Revolver Shoot - Variation: {__instance.gunVariation} Typo - {shotType} ");
             }
         }
         
@@ -638,8 +564,6 @@ namespace OWO_ULTRAKILL
             {
                 if (!owoSkin.CanFeel()) return;
                 owoSkin.GunRecoil("Shotgun");
-
-                owoSkin.LOG($"Shotgun Shoot - Variation: {__instance.variation} - PrimaryCharge: {__instance.primaryCharge}");
             }
         }
 
@@ -651,8 +575,6 @@ namespace OWO_ULTRAKILL
             {
                 if (!owoSkin.CanFeel()) return;
                 owoSkin.GunRecoil("Shotgun");
-
-                owoSkin.LOG($"Shotgun Shoot SP - Variation: {__instance.variation} - PrimaryCharge: {__instance.primaryCharge}");
             }
         }
 
@@ -664,8 +586,6 @@ namespace OWO_ULTRAKILL
             {
                 if (!owoSkin.CanFeel()) return;
                 owoSkin.GunRecoil("Shotgun");
-
-                owoSkin.LOG($"Shotgun Shoot SP - Variation: {__instance.variation} - PrimaryCharge: {__instance.primaryCharge}");
             }
         }
 
@@ -695,8 +615,6 @@ namespace OWO_ULTRAKILL
             {
                 if (!owoSkin.CanFeel()) return;
                 owoSkin.StartNailGun();
-
-                //owoSkin.LOG($"Nailgun Shoot - {__instance.variation}");
             }
         }
 
@@ -708,8 +626,6 @@ namespace OWO_ULTRAKILL
             {
                 if (!owoSkin.CanFeel()) return;
                 owoSkin.StartNailGun();
-
-                //owoSkin.LOG($"Nailgun ShootZapper - {__instance.variation}");
             }
         }
 
@@ -721,8 +637,6 @@ namespace OWO_ULTRAKILL
             {
                 if (!owoSkin.CanFeel()) return;
                 owoSkin.StartNailGun();
-
-                //owoSkin.LOG($"Nailgun SuperSaw - {__instance.variation}");
             }
         }
 
@@ -734,8 +648,6 @@ namespace OWO_ULTRAKILL
             {
                 if (!owoSkin.CanFeel()) return;
                 owoSkin.StartNailGun();
-
-                //owoSkin.LOG($"Nailgun BurstFire - {__instance.variation}");
             }
         }
 
@@ -747,8 +659,6 @@ namespace OWO_ULTRAKILL
             {
                 if (!owoSkin.CanFeel()) return;
                 owoSkin.GunRecoil("Revolver");
-
-                //owoSkin.LOG($"Nailgun ShootMagnet - {__instance.variation}");
             }
         }
         #endregion
@@ -762,8 +672,6 @@ namespace OWO_ULTRAKILL
             {
                 if (!owoSkin.CanFeel()) return;
                 owoSkin.GunRecoil("Rail Cannon");
-
-                //owoSkin.LOG($"Railcannon Shoot  - {__instance.variation}");
             }
         }
         #endregion
@@ -773,13 +681,10 @@ namespace OWO_ULTRAKILL
         public class OnRocketLauncherShoot
         {
             [HarmonyPostfix]
-            public static void Postfix(RocketLauncher __instance)
+            public static void Postfix()
             {
                 if (!owoSkin.CanFeel()) return;
                 owoSkin.GunRecoil("Rocket Launcher");
-
-
-                owoSkin.LOG($"RocketLauncher Shoot - {__instance.variation}");
             }
         }
 
@@ -787,12 +692,10 @@ namespace OWO_ULTRAKILL
         public class OnRocketLauncherShootV0
         {
             [HarmonyPostfix]
-            public static void Postfix(RocketLauncher __instance)
+            public static void Postfix()
             {
                 if (!owoSkin.CanFeel()) return;
                 owoSkin.GunRecoil("Cannon Ball");
-
-                //owoSkin.LOG($"RocketLauncher ShootCannonball - {__instance.variation}");
             }
         }
 
@@ -800,12 +703,10 @@ namespace OWO_ULTRAKILL
         public class OnRocketLauncherShootV1
         {
             [HarmonyPostfix]
-            public static void Postfix(RocketLauncher __instance)
+            public static void Postfix()
             {
                 if (!owoSkin.CanFeel()) return;
                 owoSkin.GunRecoil("Nailgun");
-
-                //owoSkin.LOG($"RocketLauncher ShootNapalm - {__instance.variation}");
             }
         }
         #endregion
@@ -816,12 +717,10 @@ namespace OWO_ULTRAKILL
         public class OnPunchSuccess
         {
             [HarmonyPrefix]
-            public static void Prefix(Vector3 point, Transform target)
+            public static void Prefix()
             {
                 if (!owoSkin.CanFeel()) return;
                 owoSkin.PunchRecoil();
-
-                //owoSkin.LOG($"Punch PunchSuccess - {point} - {target}");
             }
         }
 
@@ -846,8 +745,6 @@ namespace OWO_ULTRAKILL
             {
                 if (!owoSkin.CanFeel()) return;
                 owoSkin.PunchRecoil();
-
-                //owoSkin.LOG($"Punch Parry");
             }
         }
 
@@ -906,7 +803,6 @@ namespace OWO_ULTRAKILL
                 if (!owoSkin.CanFeel()) return;
 
                 owoSkin.dualWeapon = false;
-                //owoSkin.Feel("EndPowerUp");
             }
         }
 
