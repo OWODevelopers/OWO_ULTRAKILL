@@ -15,8 +15,11 @@ Want to get an OWO Suit? [Look here](https://owogame.com/shop/).
 - Enjoy your inmersive experience! 😊
 
 # Configuration
-You can disable the movement sensations by changing the variable *MovementEffects* to false in  
-"ULTRAKILL/BepInEx/config/org.bepinex.plugins.OWO_ULTRAKILL.cfg"
+Modify these parameters inside "ULTRAKILL/BepInEx/config/owo_ultrakill.cfg" to:
+- "movementEffects" If you don't want to feel every movement in the game, set this to "false".
+- "reverseDash" Set to "false" if you want to feel fast movements and dashes from the direction you are moving, or "true" if you want to feel the opposite.  
+![image](https://github.com/user-attachments/assets/79ec519d-94ed-4517-8773-7a1e4e544a5b)
+
 
 # Featured effect
 - Loading Up
@@ -25,9 +28,9 @@ You can disable the movement sensations by changing the variable *MovementEffect
 - Movement direction
 - Different Recoils
 - Parry
+- Getting power ups
 - Destruction (Death 🤖💀)
-- Hurt
-
+- Damage based on direction
 
 # Manual Connection
 If you are having trouble with the automatic connection, create a .txt file called OWO_Manual_IP.txt  
