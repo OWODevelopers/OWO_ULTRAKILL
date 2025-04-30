@@ -32,6 +32,7 @@ namespace OWO_ULTRAKILL
 
             owoSkin = new OWOSkin();
             movementEffects = customFile.Bind("General", "movementEffects", true);
+            reverseDash = customFile.Bind("General", "reverseDash", false);
 
             var harmony = new Harmony("owo.patch.ultrakill");
             harmony.PatchAll();
