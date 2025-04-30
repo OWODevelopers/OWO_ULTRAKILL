@@ -175,13 +175,14 @@ namespace OWO_ULTRAKILL
         {
             if (ultraIntensity < 10) return;
 
+
             Sensation toSend = GetBackedId("Ultra Speed");
             if (toSend == null) return;
             //LOG($"### SpeedAngle: {ultraAngle}");
 
-            Muscle[] musclesList = GetMuscleAngle(ultraAngle);
+            Muscle[] musclesList = GetMuscleAngle(ultraAngle, reverseDash);
 
-            toSend = toSend.WithMuscles(musclesList.WithIntensity(ultraIntensity));
+            toSend = toSend.WithMuscles(musclesList.WithIntensity(Mathf.Clamp(ultraIntensity+10, 20, 100)));
 
             OWO.Send(toSend.WithPriority(0));
         }
@@ -203,18 +204,18 @@ namespace OWO_ULTRAKILL
             OWO.Send(toSend.WithPriority(3));
         }
 
-        private Muscle[] GetMuscleAngle(float angle)
+        private Muscle[] GetMuscleAngle(float angle, bool reveseMuscle = false)
         {
             switch (angle)
             {
                 case float a when (a > 135 && a <= 225):
-                    return reverseDash ? Muscle.Back : Muscle.Front; //Default Front
+                    return reveseMuscle ? Muscle.Back : Muscle.Front; //Default Front
                 case float a when (a > 45 && a <= 135):
-                    return reverseDash ? leftSpeedMuscles : rightSpeedMuscles; //Default Right
+                    return reveseMuscle ? leftSpeedMuscles : rightSpeedMuscles; //Default Right
                 case float a when ((a >= 0 && a <= 45) || (a > 315 && a <= 360)):
-                    return reverseDash ? Muscle.Front : Muscle.Back; //Default Back
+                    return reveseMuscle ? Muscle.Front : Muscle.Back; //Default Back
                 case float a when (a > 225 && a <= 315):
-                    return reverseDash ? rightSpeedMuscles : leftSpeedMuscles; //Default Left
+                    return reveseMuscle ? rightSpeedMuscles : leftSpeedMuscles; //Default Left
                 default:
                     return Muscle.Back;
             }
@@ -262,7 +263,7 @@ namespace OWO_ULTRAKILL
         public void UpdateUltraSpeed(float angle, int intensity)
         {
             ultraAngle = angle;
-            ultraIntensity = Mathf.Clamp(intensity, 40, 100);
+            ultraIntensity = intensity;
         }
 
         #endregion

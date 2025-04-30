@@ -34,6 +34,8 @@ namespace OWO_ULTRAKILL
             movementEffects = customFile.Bind("General", "movementEffects", true);
             reverseDash = customFile.Bind("General", "reverseDash", false);
 
+            owoSkin.reverseDash = reverseDash.Value;
+
             var harmony = new Harmony("owo.patch.ultrakill");
             harmony.PatchAll();
         }
@@ -128,10 +130,13 @@ namespace OWO_ULTRAKILL
 
                 //owoSkin.LOG($"VELOCITY - VELOCITY NORMALIZED: {__instance.rb.velocity.normalized}--SPEED:{__instance.rb.velocity.magnitude} - PLAYER LOOK: {__instance.transform.forward} - ANGLE: {Vector3.SignedAngle(__instance.rb.velocity.normalized, __instance.transform.forward, Vector3.up)}");
 
-                Vector3 normalizedSpeed = __instance.rb.velocity.normalized;
                 Vector3 playerForward = __instance.transform.forward;
-                int speed = Mathf.FloorToInt(__instance.rb.velocity.magnitude);
-                float angle = Vector3.SignedAngle(__instance.rb.velocity.normalized, __instance.transform.forward, Vector3.up) + 180;
+
+                Vector3 velocity = new Vector3(__instance.rb.velocity.x, __instance.rb.velocity.y/2, __instance.rb.velocity.z);
+                Vector3 normalizedSpeed =  velocity.normalized;
+
+                int speed = Mathf.FloorToInt(velocity.magnitude);
+                float angle = Vector3.SignedAngle(normalizedSpeed, playerForward, Vector3.up) + 180;
 
 
 
