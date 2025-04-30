@@ -78,7 +78,7 @@ namespace OWO_ULTRAKILL
             {
                 suitEnabled = true;
                 LOG("OWO suit connected.");
-                Feel("Loading Up");
+                Feel("Loading Up", 1);
             }
             if (!suitEnabled) LOG("OWO is not enabled?!?!");
         }
@@ -219,7 +219,6 @@ namespace OWO_ULTRAKILL
                     return Muscle.Back;
             }
         }
-
 
         private Sensation GetBackedId(string sensationKey)        
         {

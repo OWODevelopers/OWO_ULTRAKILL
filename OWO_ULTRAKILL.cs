@@ -35,7 +35,6 @@ namespace OWO_ULTRAKILL
 
             var harmony = new Harmony("owo.patch.ultrakill");
             harmony.PatchAll();
-
         }
 
         #region Movement
@@ -54,11 +53,11 @@ namespace OWO_ULTRAKILL
                 if (fallSpeed == 0) return;
                 if (fallSpeed <= -92)
                 {
-                    owoSkin.Feel("Stomp");
+                    owoSkin.Feel("Stomp", 2);
                 }
                 else
                 {
-                    owoSkin.Feel("Landing");
+                    owoSkin.Feel("Landing", 2);
                 }
             }
         }
@@ -99,7 +98,7 @@ namespace OWO_ULTRAKILL
                 {
                     if (__instance.modNoJump || !__instance.groundProperties.canJump) return;
                 }
-                owoSkin.Feel("Jump");
+                owoSkin.Feel("Jump", 2);
             }
         }
 
@@ -111,7 +110,7 @@ namespace OWO_ULTRAKILL
             {
                 if (!owoSkin.CanFeel()) return;
 
-                owoSkin.Feel("Jump");
+                owoSkin.Feel("Jump", 2);
             }
         }
 
@@ -193,7 +192,7 @@ namespace OWO_ULTRAKILL
                 if (__instance.hp <= 0)
                 {
                     owoSkin.StopAllHapticFeedback();
-                    owoSkin.Feel("Destruction");
+                    owoSkin.Feel("Destruction", 4);
                     owoSkin.isPlayerActive = false;
                 }
 
@@ -318,8 +317,8 @@ namespace OWO_ULTRAKILL
                 int damage = __state - MonoSingleton<NewMovement>.Instance.hp;
                 if (damage > 0)
                 {
-                    owoSkin.LOG($"PhysicalShockwave CheckCollision");
-                    owoSkin.Feel("Damage");
+                    //owoSkin.LOG($"PhysicalShockwave CheckCollision");
+                    owoSkin.Feel("Damage", 3);
                 }
             }
         }
@@ -380,32 +379,32 @@ namespace OWO_ULTRAKILL
                 int damage = __state - MonoSingleton<NewMovement>.Instance.hp;
                 if (damage > 0)
                 {
-                    owoSkin.LOG($"HurtZone FixedUpdate - {__instance.transform.position}");
-                    owoSkin.Feel("Damage");
+                    //owoSkin.LOG($"HurtZone FixedUpdate - {__instance.transform.position}");
+                    owoSkin.Feel("Damage", 3);
                 }
             }
         }
 
-        [HarmonyPatch(typeof(DeathZone), "GotHit")]
-        public class OnDeathZone
-        {
-            [HarmonyPrefix]
-            public static void Prefix(out int __state)
-            {
-                __state = MonoSingleton<NewMovement>.Instance.hp;
-            }
-            [HarmonyPostfix]
-            public static void Postfix(int __state, DeathZone __instance)
-            {
-                int damage = __state - MonoSingleton<NewMovement>.Instance.hp;
-                if (damage > 0)
-                {
-                    owoSkin.LOG($"DeathZone GotHit - {__instance.transform.position}");
+        //[HarmonyPatch(typeof(DeathZone), "GotHit")]
+        //public class OnDeathZone
+        //{
+        //    [HarmonyPrefix]
+        //    public static void Prefix(out int __state)
+        //    {
+        //        __state = MonoSingleton<NewMovement>.Instance.hp;
+        //    }
+        //    [HarmonyPostfix]
+        //    public static void Postfix(int __state, DeathZone __instance)
+        //    {
+        //        int damage = __state - MonoSingleton<NewMovement>.Instance.hp;
+        //        if (damage > 0)
+        //        {
+        //            owoSkin.LOG($"DeathZone GotHit - {__instance.transform.position}");
 
-                    owoSkin.Feel("Fall");
-                }
-            }
-        }
+        //            owoSkin.Feel("Fall");
+        //        }
+        //    }
+        //}
 
         [HarmonyPatch(typeof(Explosion), "Collide")]
         public class OnExplosion
@@ -482,29 +481,29 @@ namespace OWO_ULTRAKILL
         }
 
         //unused?
-        [HarmonyPatch(typeof(BlackHoleProjectile), "OnTriggerEnter")]
-        public class OnBlackHoleProjectile
-        {
-            [HarmonyPrefix]
-            public static void Prefix(out int __state)
-            {
-                __state = MonoSingleton<NewMovement>.Instance.hp;
-            }
-            [HarmonyPostfix]
-            public static void Postfix(int __state)
-            {
-                int damage = __state - MonoSingleton<NewMovement>.Instance.hp;
-                if (damage > 0)
-                {
-                    if (MonoSingleton<NewMovement>.Instance.hp < __state)
-                    {
-                        owoSkin.LOG($"BlackHoleProjectile OnTriggerEnter");
+        //[HarmonyPatch(typeof(BlackHoleProjectile), "OnTriggerEnter")]
+        //public class OnBlackHoleProjectile
+        //{
+        //    [HarmonyPrefix]
+        //    public static void Prefix(out int __state)
+        //    {
+        //        __state = MonoSingleton<NewMovement>.Instance.hp;
+        //    }
+        //    [HarmonyPostfix]
+        //    public static void Postfix(int __state)
+        //    {
+        //        int damage = __state - MonoSingleton<NewMovement>.Instance.hp;
+        //        if (damage > 0)
+        //        {
+        //            if (MonoSingleton<NewMovement>.Instance.hp < __state)
+        //            {
+        //                owoSkin.LOG($"BlackHoleProjectile OnTriggerEnter");
 
-                        owoSkin.Feel("Explosion");
-                    }
-                }
-            }
-        }
+        //                owoSkin.Feel("Explosion");
+        //            }
+        //        }
+        //    }
+        //}
 
         //unused?
         [HarmonyPatch(typeof(Coin), "ShootAtPlayer")]
@@ -584,9 +583,8 @@ namespace OWO_ULTRAKILL
                 int damage = __state - MonoSingleton<NewMovement>.Instance.hp;
                 if (damage > 0)
                 {
-                    owoSkin.LOG($"FireZone OnTriggerStay - {__instance.transform.position}");
-
-                    owoSkin.Feel("Damage");
+                    //owoSkin.LOG($"FireZone OnTriggerStay - {__instance.transform.position}");
+                    owoSkin.Feel("Damage", 3);
                 }
 
             }
