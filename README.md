@@ -28,9 +28,9 @@ Modify these parameters inside "ULTRAKILL/BepInEx/config/owo_ultrakill.cfg" to:
 - Movement direction
 - Different Recoils
 - Parry
+- Getting power ups
 - Destruction (Death 🤖💀)
-- Hurt
-
+- Damage based on direction
 
 # Manual Connection
 If you are having trouble with the automatic connection, create a .txt file called OWO_Manual_IP.txt  
