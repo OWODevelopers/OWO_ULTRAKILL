@@ -130,7 +130,7 @@ namespace OWO_ULTRAKILL
 
                 Vector3 playerForward = __instance.transform.forward;
 
-                Vector3 velocity = new Vector3(__instance.rb.velocity.x, __instance.rb.velocity.y/2, __instance.rb.velocity.z);
+                Vector3 velocity = new Vector3(__instance.rb.velocity.x,0, __instance.rb.velocity.z);
                 Vector3 normalizedSpeed =  velocity.normalized;
 
                 int speed = Mathf.FloorToInt(velocity.magnitude);
@@ -140,6 +140,7 @@ namespace OWO_ULTRAKILL
 
                 if (__instance.activated)
                 {
+                    owoSkin.LOG($"x:{velocity.x} y: {velocity.y} z: {velocity.z} speed: {speed}");
                     owoSkin.UpdateUltraSpeed(angle, speed);
                 }
 

@@ -173,7 +173,7 @@ namespace OWO_ULTRAKILL
 
         public void FeelSpeed()
         {
-            if (ultraIntensity < 10) return;
+            if (ultraIntensity < 17) return;
 
 
             Sensation toSend = GetBackedId("Ultra Speed");
@@ -205,7 +205,7 @@ namespace OWO_ULTRAKILL
         }
 
         private Muscle[] GetMuscleAngle(float angle, bool reveseMuscle = false)
-        {
+        {           
             switch (angle)
             {
                 case float a when (a > 135 && a <= 225):
